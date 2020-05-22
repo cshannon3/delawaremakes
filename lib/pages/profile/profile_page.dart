@@ -36,25 +36,16 @@ class ProfilePage extends StatelessWidget {
                       alt:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*"))
                   .image,
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBox(height: 20,),
             Text(
               safeGet(key: "name", map:appState.getProfileData(), alt: ""),
               textScaleFactor: 4,
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              safeGet(key: "bio", map: appState.getProfileData(), alt: ""),
-
+            SizedBox(height: 20,),
+            Text(safeGet(key: "bio", map: appState.getProfileData(), alt: ""),
               textScaleFactor: 2,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 40,
-            ),
+              textAlign: TextAlign.center, ),
+            SizedBox( height: 40,),
           ])
         : Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -68,20 +59,14 @@ class ProfilePage extends StatelessWidget {
                             "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*"))
                     .image,
               ),
-              SizedBox(
-                width: 20,
-              ),
+              SizedBox(width: 20,),
               Column(children: [
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20,),
                 Text(
                   safeGet(key: "displayName", map: appState.getProfileData(), alt: ""),
                   textScaleFactor: 4,
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20, ),
                  appState.isCurrentUser() ? MainUIButton(
               text:"Sign Out",
               onPressed: () {
@@ -98,7 +83,6 @@ class ProfilePage extends StatelessWidget {
     List<Widget> clWidget=[];
     Map claims = safeGet(map: appState.getProfileData(), key: "claims",alt: {});
     claims.forEach((k, cl) {
-     // print(cl);
      // Map des =state.designs.firstWhere((element) => element["id"]== cl["designID"], orElse: ()=>{});
     Map des = appState.dataRepo.getItemByID("designs", cl["designID"]);
       Map org = appState.dataRepo.getItemByID("orgs", cl["orgID"]);
@@ -143,9 +127,7 @@ class ProfilePage extends StatelessWidget {
               text: "New Update"):Container(),
           TitleText(title:"Claims"),
           claimsList(context),
-           SizedBox(
-            height: 40,
-          ),
+           SizedBox( height: 40,),
           TitleText(title:"Updates"),
                 Container(
           height:500.0,

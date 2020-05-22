@@ -145,13 +145,6 @@ Widget optionsBar(List orgsData,List dropOffData,List pickUpData){
              ...requests.where((element) => element.remaining()<=0).map((e) => e.requestTile()),
           ]
 )));}
-//  List<Widget> requestsList(){
-//   List<Widget> out=[];
-//   requests.forEach((element) {
-//     out.add(element.requestTile());
-//   });
-
-// }
 
 
 Widget mapWidget(List orgsData,List dropOffData,List pickUpData) =>Expanded(child: 
@@ -303,24 +296,17 @@ class RequestModel{
         Map cdata = dataRepo.getItemByID("claims", key, addLinkMap: true);
         Map resources = safeGet(map: cdata, key:"resources", alt:{});
         resources.forEach((k, v) {
-         // print(v);
           quantityDelivered+=safeGet(map: v, key:"quantity", alt:0);
         });
       });
-      
-
       isDone = quantityDelivered>=quantityRequested;
       isClaimed = quantityClaimed>=quantityRequested;
-     // print(quantityDelivered);
     }
-
-
     makeClaim(){
       var formManager = locator<FormManager>();
       formManager.initClaim(orgData: orgData, requestData: data, maxQuantity: quantityRequested-quantityClaimed);
       formManager.setForm("claim", resetBuffer: false);
     }
-
     Widget requestTile(){
       return Padding(
         padding: EdgeInsets.symmetric(vertical:10.0),
@@ -394,8 +380,6 @@ class RequestModel{
       userName = safeGet(key:"userName", map:claimData, alt:"User");
     }
     String groupName = safeGet(key:"name", map:groupData, alt:"");
-   
-    //print(groupName);
     return Container(
       child:Padding(
         padding: EdgeInsets.only(left:50.0),
@@ -413,10 +397,6 @@ class RequestModel{
                      isClaimDone?SizedBox():Padding(
              padding: EdgeInsets.all(5.0),
              child:updateButton(claimData)
-           ),
-           isClaimDone?SizedBox():Padding(
-             padding: EdgeInsets.all(5.0),
-             child:IconButton(icon: Icon(Icons.edit, color: Colors.grey[300],), onPressed: () {  },)
            ),
               ],
               
@@ -452,9 +432,6 @@ class RequestModel{
                       child: Text("Update",
                           style:  TextStyle(color: Colors.white, fontSize: 12.0)),
             );
-
-    
-    
     Widget activeTicker()=>   Padding(
           padding: EdgeInsets.all(3.0),
           child:Tooltip(
@@ -488,7 +465,6 @@ class RequestModel{
             ),
           ),
         );
-        // Text("$quantityClaimed", style: TextStyle(fontSize:10.0,),),
         Widget pendingTicker()=>   Padding(
           padding: EdgeInsets.all(3.0),
           child: Tooltip(

@@ -52,22 +52,3 @@ class IntroBlock extends StatelessWidget {
   }
 }
 
-
-             // child: Center(
-  //  )))
-                  //)
-            //      ),
-        //  Expanded(
-                 // child:
-
-// SliverPersistentHeader(
-//         pinned: false,
-//         delegate: SliverAppBarDelegate(
-//             minHeight:   130.0,maxHeight: 180.0, child: Container(
-//         color: Colors.grey[200],
-//         padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-//         child: 
-
-  //double width;
- // String topHeader = ""; 
- // String decription = "";

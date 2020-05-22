@@ -7,10 +7,6 @@ import 'package:delaware_makes/state/docs_repo.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
-
- 
-
-
 void main() async {
   setupLocator();
     
@@ -44,8 +40,7 @@ class AppComponentState extends State<AppComponent> {
       title: 'Delaware Makes',
       debugShowCheckedModeBanner: false,
            theme: ThemeData(
-             fontFamily: 'HelveticaNeue',
-         //  .copyWith( bodyText1: GoogleFonts.oswald(), ),
+             fontFamily: 'HelveticaNeue'
       ),
       color: Colors.grey,
       routes: Routes.route(),

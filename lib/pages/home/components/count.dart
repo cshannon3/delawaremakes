@@ -62,29 +62,3 @@ Widget countWidget({String quantity, String name}) => Container(
       ],
     ));
 
-
-      //           isMobile?  [
-      //   Container(
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //       children: <Widget>[
-      //           //    countWidget(name: "Hand-Sewn Masks", quantity: "$hsm+"),
-      //           countWidget(name: "Face Shields", quantity: "$fs+"),
-      //           countWidget(name: "Ear Savers",quantity: "$es+"),
-      //       ],
-      //     ),
-      //   ),
-      //   Container(
-          
-      //     child: Padding(
-      //       padding:EdgeInsets.only(top:8.0),
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //         children: <Widget>[
-                   
-      //             Center(child: countWidget(name: "Bias Tape Makers", quantity: "$btm+")),
-      //         ],
-      //       ),
-      //     ),
-      //   )
-      // ]:[

@@ -34,6 +34,7 @@ class DesignsPage extends StatelessWidget {
           TitleText(title:"Other Designs", underline: true),
           SizedBox(height:30.0),
           nihEarSavers(),
+          template(),
           SizedBox(height:300.0),
         ],
       ),

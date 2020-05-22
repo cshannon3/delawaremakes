@@ -1,16 +1,13 @@
 # delaware_makes
 
-A new Flutter project.
+Live Site: https://delawaremakes.netlify.app/#/
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+A site to help local maker groups(high schools, libraries, fb groups) produce and distribute PPE. 
 
-A few resources to get you started if this is your first Flutter project:
+This site acts as a two sided platform that takes in requests for 3D printed ppe and connects the organization to a group that can produce the item.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Made with Flutter https://flutter.dev/
+
+will add more soon..
