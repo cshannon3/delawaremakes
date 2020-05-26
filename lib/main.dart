@@ -1,19 +1,16 @@
 
 import 'package:delaware_makes/routes.dart';
-import 'package:delaware_makes/service_locator.dart';
-import 'package:delaware_makes/state/app_state.dart';
-import 'package:delaware_makes/state/data_repo.dart';
-import 'package:delaware_makes/state/docs_repo.dart';
+import 'package:delaware_makes/state/state.dart';
+import 'package:delaware_makes/theme.dart';
+import 'package:domore/state/new_data_repo.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-
 void main() async {
   setupLocator();
-    
     var dataRepo = locator<DataRepo>();
     var docsRepo = locator<DocsRepo>();
-    await dataRepo.initialize(/*gmanager: gmanager*/);
-    await docsRepo.initialize(/*gmanager: gmanager*/);   
+    await dataRepo.initialize();
+    await docsRepo.initialize();   
     var appState = locator<AppState>();
     appState.init();
   runApp(AppComponent());
@@ -35,16 +32,16 @@ class AppComponentState extends State<AppComponent> {
   
   @override
   Widget build(BuildContext context) {
- 
     return  MaterialApp(
       title: 'Delaware Makes',
       debugShowCheckedModeBanner: false,
-           theme: ThemeData(
-             fontFamily: 'HelveticaNeue'
-      ),
+           theme: themeData,
       color: Colors.grey,
       routes: Routes.route(),
       onGenerateRoute: Application.router.generator,
    );
   }
 }
+
+
+/*gmanager: gmanager*//*gmanager: gmanager*/

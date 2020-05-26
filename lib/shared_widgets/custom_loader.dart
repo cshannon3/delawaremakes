@@ -1,7 +1,8 @@
 
-import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/utils.dart';
 
 class CustomLoader {
   static CustomLoader _customLoader;
@@ -86,9 +87,9 @@ class CustomScreenLoader extends StatelessWidget {
                       strokeWidth: 2,
                     ),
               Image.asset(
-                'assets/images/depng2.png',
-                height: 30,
-                width: 30,
+                'assets/depng2.png',
+                height: 50,
+                width: 50,
               )
             ],
           ),

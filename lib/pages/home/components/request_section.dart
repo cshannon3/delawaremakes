@@ -1,10 +1,9 @@
-import 'package:delaware_makes/forms/components/form_components.dart';
-import 'package:delaware_makes/forms/form_manager.dart';
+
 import 'package:delaware_makes/pages/home/home_constants.dart';
-import 'package:delaware_makes/service_locator.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
-import 'package:delaware_makes/state/data_repo.dart';
-import 'package:delaware_makes/utils/utils.dart';
+import 'package:delaware_makes/state/state.dart';
+import 'package:domore/state/custom_model.dart';
+import 'package:domore/state/new_data_repo.dart';
 import 'package:flutter/material.dart';
 
 
@@ -14,17 +13,24 @@ class RequestSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var dataRepo = locator<DataRepo>();
-    List orgsData = dataRepo.getItemsWhere("orgs",getLinkedData: true);
-    orgsData.sort((a, b) => safeGet(map: b, key: "claims", alt: [])
-        .length
-        .compareTo(safeGet(map: a, key: "claims", alt: []).length));
-    orgsData = orgsData.sublist(0, 13);
-    List<String> orgNames = [];
+    TextStyle aTextStyle= Theme.of(context).textTheme.headline5;
+   TextStyle bTextStyle= Theme.of(context).textTheme.headline6;
 
-    orgsData.forEach((value) {
-      String orgName = safeGet(map: value, key: "name", alt: "");
-      if (orgName != "") orgNames.add(orgName);
-    });
+  
+    List<CustomModel> orgsData=dataRepo.getModels("orgs").values.toList();
+    orgsData.forEach((groupMod) =>groupMod.addAssociatedIDs(otherCollectionName: "claims", getOneToMany: dataRepo.getOneToMany) );
+    orgsData.sort((a,b) => 
+          b.getVal("claims", associated:true, alt:[]).length.compareTo(
+          a.getVal("claims", associated:true, alt:[]).length)
+          );
+   // safeGet(map: b, key:"claims", alt:[]).length.compareTo(safeGet(map: a, key:"claims", alt:[]).length));
+  if(orgsData.length>13)orgsData= orgsData.sublist(0, 13);
+   List<String> orgNames = [];
+   orgsData.forEach((value) {
+     String name=  value.getVal("name");
+     if(name!=null)orgNames.add(name);
+   });
+
 
     return isMobile
         ? Container(
@@ -33,7 +39,7 @@ class RequestSection extends StatelessWidget {
               SizedBox(
                 height: 20.0,
               ),
-              FormTitle(title:"Is your organization in need of the following items?"),
+              TitleText(title:"Is your organization in need of the following items?"),
               SizedBox(
                 height: 10.0,
               ),
@@ -43,8 +49,8 @@ class RequestSection extends StatelessWidget {
                   child: CallToActionButton(
                     name: "Request Donation",
                     onPressed: () {
-                      var formManager = locator<FormManager>();
-                      formManager.setForm("request");
+                      var appState =  locator<AppState>();
+                      appState.initRequest();
                     },
                   ),
                 ),
@@ -70,8 +76,7 @@ class RequestSection extends StatelessWidget {
                         height: tileH,
                         child: StylizedImageBox(
                             bottomText: "Ear Savers",
-                            url:
-                                "https://www.kold.com/resizer/V2_1DOI5V4K4m57fH9SdmUKZZYg=/1400x0/arc-anglerfish-arc2-prod-raycom.s3.amazonaws.com/public/SCALPHZ4Y5GLFDNEO63FGWO76Y.jpg")),
+                            url: "https://www.kold.com/resizer/V2_1DOI5V4K4m57fH9SdmUKZZYg=/1400x0/arc-anglerfish-arc2-prod-raycom.s3.amazonaws.com/public/SCALPHZ4Y5GLFDNEO63FGWO76Y.jpg")),
                   ],
                 ),
               ),
@@ -104,21 +109,21 @@ class RequestSection extends StatelessWidget {
                                   SizedBox(height: 10),
                                   Text(
                                     "Delivering To:",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20.0),
+                                    style: aTextStyle
+                                    //TextStyle(/  color: Colors.white, fontSize: 20.0),
                                   ),
                                   SizedBox(height: 20),
                                   ...orgNames.map((e) => Padding(
                                         padding: EdgeInsets.only(top: 3.0),
                                         child: Text(e,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16.0)),
+                                            style: bTextStyle
+                                           // TextStyle( color: Colors.white,fontSize: 16.0)
+                                            ),
                                       )),
                                   Text(
                                     "...",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20.0),
+                                    style: aTextStyle
+                                   // TextStyle(  color: Colors.white, fontSize: 20.0),
                                   ),
                                 ],
                               ),
@@ -137,7 +142,7 @@ class RequestSection extends StatelessWidget {
                   SizedBox(
                     height: 20.0,
                   ),
-                  FormTitle(title:"Is your organization in need of these items?"),
+                  TitleText(title:"Is your organization in need of these items?"),
                   SizedBox(
                     height: 10.0,
                   ),
@@ -147,8 +152,9 @@ class RequestSection extends StatelessWidget {
                       child: CallToActionButton(
                         name: "Request Donation",
                         onPressed: () {
-                          var formManager = locator<FormManager>();
-                          formManager.setForm("request");
+                          var appState = locator<AppState>();
+                          appState.initRequest();
+                        //  formManager.setForm("request");
                         },
                       ),
                     ),
@@ -206,21 +212,21 @@ class RequestSection extends StatelessWidget {
                                   SizedBox(height: 10),
                                   Text(
                                     "Delivering To:",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20.0),
+                                    style:aTextStyle
+                                     //TextStyle( color: Colors.white, fontSize: 20.0),
                                   ),
                                   SizedBox(height: 20),
                                   ...orgNames.map((e) => Padding(
                                         padding: EdgeInsets.only(top: 3.0),
                                         child: Text(e,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16.0)),
+                                            style: bTextStyle
+                                          //  TextStyle(color: Colors.white, fontSize: 16.0)
+                                                ),
                                       )),
                                   Text(
                                     "...",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20.0),
+                                    style:aTextStyle
+                                   // TextStyle( color: Colors.white, fontSize: 20.0),
                                   ),
                                 ],
                               ),
@@ -232,3 +238,18 @@ class RequestSection extends StatelessWidget {
           );
   }
 }
+
+                    //  appState.setForm("request");
+                      // var formManager = locator<FormManager>();
+                      // formManager.setForm("request");
+                          // List orgsData = dataRepo.getItemsWhere("orgs");
+    // orgsData.sort((a, b) => safeGet(map: b, key: "claims", alt: [])
+    //     .length
+    //     .compareTo(safeGet(map: a, key: "claims", alt: []).length));
+    // orgsData = orgsData.sublist(0, 13);
+    // List<String> orgNames = [];
+
+    // orgsData.forEach((value) {
+    //   String orgName = safeGet(map: value, key: "name", alt: "");
+    //   if (orgName != "") orgNames.add(orgName);
+    // });

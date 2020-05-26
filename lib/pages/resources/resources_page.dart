@@ -2,7 +2,7 @@
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/material.dart';
-class DesignsPage extends StatelessWidget {
+class ResourcesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(

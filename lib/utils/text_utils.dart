@@ -15,6 +15,16 @@ Widget toListText(String t){
     children: lines,
   );
 }
+Widget toColumnText(String t){
+  List<Widget> lines=[];
+  t.split("++").forEach((element) {
+    lines.add(toRichText(element));
+    lines.add(SizedBox(height:30.0));
+  });
+  return Column(
+    children: lines,
+  );
+}
 
 RichText toRichText(String tx) {
   return RichText(

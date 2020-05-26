@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:delaware_makes/extensions/hover_extension.dart';
+import '../extensions/hover_extension.dart';
 
  Widget mainMyTabs({String selected, double width, Map<String, Function()> items}){
       List<Widget> tabWidgets = [];

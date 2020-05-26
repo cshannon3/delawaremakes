@@ -23,9 +23,6 @@ class Routes {
   static String designs= "/designs";
   static String id= "users/:id";
   static String locations = "/map";
-  static String login = "/login";
-  static String signIn = "/signIn";
-  static String signUp = "/signUp";
   static String datastruct = "/datastruct";
 
   static dynamic route(){
@@ -41,15 +38,11 @@ class Routes {
 
     });
     router.define(root, handler: rootHandler);
-   // router.define(admin, handler: adminHandler);
-    router.define(login, handler: loginHandler);
     router.define(profile, handler: profileHandler);
     router.define(designs, handler: designsHandler);
     router.define(id, handler: usersHandler);
     router.define(aboutUs, handler: aboutUsHandler);
     router.define(locations, handler: locRouterHandler);
-    router.define(signIn, handler: signInHandler);
-    router.define(signUp, handler: signUpHandler);
   }
 }
 var locRouterHandler = Handler(
@@ -80,21 +73,35 @@ var aboutUsHandler = Handler(
 var usersHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
   return RootPage(screen:ProfilePage(),currentRoute:"/profile");
 });
-var loginHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return RootPage(screen:WelcomePage(),currentRoute:"/login");
-});
-var signInHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return RootPage(screen:SignIn(),currentRoute:"/signIn");
-});
-var signUpHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  return RootPage(screen:Signup(),currentRoute:"/signUp");
-});
+
+
+
+
+   // router.define(signIn, handler: signInHandler);
+   // router.define(signUp, handler: signUpHandler);
+
+
+   // router.define(admin, handler: adminHandler);
+   // router.define(login, handler: loginHandler);
+// var loginHandler = Handler(
+//     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+//   return RootPage(screen:WelcomePage(),currentRoute:"/login");
+// });
+// var signInHandler = Handler(
+//     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+//   return RootPage(screen:SignIn(),currentRoute:"/signIn");
+// });
+// var signUpHandler = Handler(
+//     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+//   return RootPage(screen:Signup(),currentRoute:"/signUp");
+// });
 
 
 // var adminHandler = Handler(
 //     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
 //   return RootPage(screen:AdminPage(),currentRoute:"/admin");
 //     });
+
+  //static String login = "/login";
+ // static String signIn = "/signIn";
+  //static String signUp = "/signUp";

@@ -1,11 +1,11 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:delaware_makes/forms/form_manager.dart';
 import 'package:delaware_makes/routes.dart';
-import 'package:delaware_makes/service_locator.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/state/app_state.dart';
+import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/utility.dart';
+import 'package:domore/state/custom_model.dart';
 import 'package:flutter/material.dart';
 //, this.profileId
 class ProfilePage extends StatelessWidget {
@@ -26,25 +26,23 @@ class ProfilePage extends StatelessWidget {
 
   Widget userInfoWidget(double w, BuildContext context) {
     var appState = locator<AppState>();
+    CustomModel user = appState.getProfileData();
     return (w < 600)
         ? Column(children: [
             CircleAvatar(
               radius: 100,
-              backgroundImage: Image.network(safeGet(
-                      key: "url",
-                      map: appState.getProfileData(),
-                      alt:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*"))
+              backgroundImage: Image.network(
+                user.getVal("url",alt:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*")
+)
                   .image,
             ),
             SizedBox(height: 20,),
             Text(
-              safeGet(key: "name", map:appState.getProfileData(), alt: ""),
+              user.getVal("name"),
+            
               textScaleFactor: 4,
             ),
             SizedBox(height: 20,),
-            Text(safeGet(key: "bio", map: appState.getProfileData(), alt: ""),
-              textScaleFactor: 2,
-              textAlign: TextAlign.center, ),
             SizedBox( height: 40,),
           ])
         : Row(
@@ -52,18 +50,17 @@ class ProfilePage extends StatelessWidget {
             children: <Widget>[
               CircleAvatar(
                 radius: 100,
-                backgroundImage: Image.network(safeGet(
-                        key: "url",
-                        map: appState.getProfileData(),
-                        alt:
-                            "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*"))
+                backgroundImage: Image.network(
+               //   safeGet( key: "url", map: appState.getProfileData(), alt:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*")
+                         user.getVal("url",alt:"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/nature-quotes-1557340276.jpg?crop=1.00xw:0.757xh;0,0.0958xh&resize=768:*"))
                     .image,
               ),
               SizedBox(width: 20,),
               Column(children: [
                 SizedBox(height: 20,),
                 Text(
-                  safeGet(key: "displayName", map: appState.getProfileData(), alt: ""),
+                //  safeGet(key: "displayName", map: appState.getProfileData(), alt: ""),
+                user.getVal("name"),
                   textScaleFactor: 4,
                 ),
                 SizedBox(height: 20, ),
@@ -78,34 +75,46 @@ class ProfilePage extends StatelessWidget {
           );
   }
 
-  Widget claimsList(BuildContext context){
-    var appState = locator<AppState>();
-    List<Widget> clWidget=[];
-    Map claims = safeGet(map: appState.getProfileData(), key: "claims",alt: {});
-    claims.forEach((k, cl) {
-     // Map des =state.designs.firstWhere((element) => element["id"]== cl["designID"], orElse: ()=>{});
-    Map des = appState.dataRepo.getItemByID("designs", cl["designID"]);
-      Map org = appState.dataRepo.getItemByID("orgs", cl["orgID"]);
-     // Map org =state.orgs.firstWhere((element) => element["id"]== cl["orgID"], orElse: ()=>{});
-      String d= safeGet(key: "name", map: des, alt: "design");
-      String o= safeGet(key: "name", map: org, alt: "Organization");
-      clWidget.add(
-        ListTile(
-          leading: IconButton(icon: Icon(Icons.check_circle_outline), onPressed: null),
-          title:Text("${cl["quantity"]} $d to $o"),
-          trailing: (appState.isCurrentUser() && !safeGet(map: cl, key: "isDone",alt: false))?
-          Container(width:150.0, child: MainUIButton(text:"Update Claim",
-          onPressed: (){
-             var formManager = locator<FormManager>();
-             formManager.initUpdate(claimData:cl);  
-            formManager.setForm("update", resetBuffer: false);
-                    }
-          )):SizedBox(width:20.0)
-          )
-      );
-    });
-    return Column(children: clWidget);
-  }
+  // Widget claimsList(BuildContext context){
+  //   var appState = locator<AppState>();
+  //   List<Widget> clWidget=[];
+  //   Map claims = safeGet(map: appState.getProfileData(), key: "claims",alt: {});
+  //   claims.forEach((k, cl) {
+  //    // Map des =state.designs.firstWhere((element) => element["id"]== cl["designID"], orElse: ()=>{});
+  //   CustomModel des = appState.dataRepo.getItemByID("designs", cl["designID"]);
+  //     CustomModel org = appState.dataRepo.getItemByID("orgs", cl["orgID"]);
+  //    // Map org =state.orgs.firstWhere((element) => element["id"]== cl["orgID"], orElse: ()=>{});
+  //    // String d= des.getVal(key: "name", map: des, alt: "design");
+  //    // String o= safeGet(key: "name", map: org, alt: "Organization");
+  //     clWidget.add(
+  //       ListTile(
+  //         leading: IconButton(icon: Icon(Icons.check_circle_outline), onPressed: null),
+  //         title:Text("${cl["quantity"]} "),//$d to $o"),
+  //         trailing: (appState.isCurrentUser() && !safeGet(map: cl, key: "isDone",alt: false))?
+  //         Container(width:150.0, child: MainUIButton(text:"Update Claim",
+  //         onPressed: (){
+  //            //var formManager = locator<FormManager>();
+  //            var dataRepo = locator<DataRepo>();
+  //            var groups = dataRepo.getItemsWhere("groups");
+  //                       // print(groups); //  data
+  //           Map buffer={
+  //             "claimID": cl["id"],
+  //             "quantity":safeGet(key: "quantity", map: cl, alt: 0),
+  //             "orgID":safeGet(key: "orgID", map: cl, alt: ""),
+  //             "designID":safeGet(key: "designID", map: cl, alt: ""),
+  //             "requestID":safeGet(key: "requestID", map: cl, alt: ""),
+  //             "groupsData":groups
+  //         };
+  //       //  formManager.setForm("update", buffer: buffer);
+  //           //  formManager.initUpdate(claimData:cl);  
+  //           // formManager.setForm("update", resetBuffer: false);
+  //                   }
+  //         )):SizedBox(width:20.0)
+  //         )
+  //     );
+  //   });
+  //   return Column(children: clWidget);
+  // }
   @override
   Widget build(BuildContext context) {
     var appState = locator<AppState>();
@@ -121,24 +130,24 @@ class ProfilePage extends StatelessWidget {
           ),
         appState.isCurrentUser() ?  MainUIButton(
               onPressed: () {
-                 var formManager = locator<FormManager>();
-                formManager.setForm("update",);
+               //  var formManager = locator<FormManager>();
+              //  formManager.setForm("update",);
               },
               text: "New Update"):Container(),
           TitleText(title:"Claims"),
-          claimsList(context),
+          //claimsList(context),
            SizedBox( height: 40,),
           TitleText(title:"Updates"),
-                Container(
-          height:500.0,
-          child: GridView.count(
-  crossAxisCount: getColumnNum(w),
-  children: imageSliders(safeGet(
-                            map: appState.getProfileData(),
-                            key: "resources",
-                            alt: {}).values
-                            ))
-                            )
+  //               Container(
+  //         height:500.0,
+  //         child: GridView.count(
+  // crossAxisCount: getColumnNum(w),
+  // children: imageSliders(safeGet(
+  //                           map: appState.getProfileData(),
+  //                           key: "resources",
+  //                           alt: {}).values
+  //                           ))
+  //                           )
         ]
       
       )),
@@ -297,3 +306,8 @@ class _DesignTileState extends State<UpdatesTile> {
 
 
 
+
+
+          // Text(safeGet(key: "bio", map: appState.getProfileData(), alt: ""),
+           //   textScaleFactor: 2,
+           //   textAlign: TextAlign.center, ),
