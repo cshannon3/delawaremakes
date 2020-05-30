@@ -64,9 +64,6 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
-
  initLogin(){
    isLoginActive=true;
    notifyListeners();
@@ -216,7 +213,7 @@ Request
 
   Future<bool> _submitRequestForm() async{
           print("SUBMIT Request");
-          Slack slack = new Slack('https://hooks.slack.com/services/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');
+          Slack slack = new Slack(slackRequestWebhook);
          
       final Map reqs =safeGet(key: "requests", map: currentFormModel.buffer, alt: {});
      String now = DateTime.now().toUtc().toString();
@@ -289,7 +286,7 @@ Request
     //   String orgName = orgModel.getVal("name");
     //   String code = orgModel.id.substring(0,5);
 
-    //  var url = 'https://us-central1-million-more-makers.cloudfunctions.net/sendMailFB?dest=$contactEmail&contactName=$contactName&orgName=$orgName&code=$code';
+    //
    //  print(url);
       //   var response = await  http.post(url, body: {});
       // print('Response status: ${response.statusCode}');
