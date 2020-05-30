@@ -2,7 +2,6 @@
 import 'package:delaware_makes/pages/home/components/count.dart';
 import 'package:delaware_makes/state/docs_repo.dart';
 import 'package:delaware_makes/state/service_locator.dart';
-import 'package:delaware_makes/state/app_state.dart';
 import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/material.dart';
 

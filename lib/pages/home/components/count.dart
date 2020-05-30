@@ -54,15 +54,11 @@ Widget countWidget({String quantity, String name, TextStyle s, TextStyle m}) => 
       children: <Widget>[
         Text(
           quantity,
-           style:s
-          
-        ),
+           style:s),
         Text(name,
            style:m ),
-       
         Text("Produced",
            style:m ),
-          
       ],
     ));
 }

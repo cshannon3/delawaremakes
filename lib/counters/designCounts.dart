@@ -1,8 +1,7 @@
 
 import 'package:delaware_makes/state/state.dart';
-import 'package:delaware_makes/utils/utils.dart';
-import 'package:domore/state/custom_model.dart';
-import 'package:domore/state/new_data_repo.dart';
+import 'package:domore/database/custom_model.dart';
+import 'package:domore/database/new_data_repo.dart';
 import 'package:flutter/material.dart';
 
 class DesignModelCount{
@@ -34,12 +33,12 @@ class DesignModelCount{
         fieldName: "quantity", 
         getOneToMany: dataRepo.getOneToMany, 
         idsToVals: dataRepo.idsToVals);
-        print(ck);
+       // print(ck);
         ck.forEach((quant) { 
           if(quant is String)quant=int.tryParse(quant)??0;
           try{ quantityClaimed+=quant;}catch(e){print("err");}
         });
-        print(quantityClaimed);
+       // print(quantityClaimed);
         des.getAssociatedVals(
           otherCollectionName: "requests", 
           fieldName: "quantity", 
@@ -61,12 +60,15 @@ class DesignModelCount{
           if(quant is String)quant=int.tryParse(quant)??0;
           try{ quantityDelivered+=quant;}catch(e){}
         });
-        print("QUANTITY DELIVERED");
-      print(quantityDelivered);
+      //  print("QUANTITY DELIVERED");
+     // print(quantityDelivered);
       //safeGet(map: des, key:"name", alt:"");
      
     }
 }
+
+
+
 
 
 //  Map requests = safeGet(map: des, key:"requests", alt:{});

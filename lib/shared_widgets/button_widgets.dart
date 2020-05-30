@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import '../extensions/hover_extension.dart';
+import 'package:domore/domore.dart';
 
  Widget mainMyTabs({String selected, double width, Map<String, Function()> items}){
       List<Widget> tabWidgets = [];
@@ -32,23 +32,23 @@ import '../extensions/hover_extension.dart';
                 ),
               );
 
-class MenuButton extends StatelessWidget {
-    final String name;
-  final Function() onPressed;
+// class MenuButton extends StatelessWidget {
+//     final String name;
+//   final Function() onPressed;
 
-  const MenuButton({Key key,@required this.name,@required this.onPressed}) : super(key: key);
-  @override
-    Widget build(BuildContext context) {
-    return Container(
-      height:40,
-      child: FlatButton(
-                      onPressed: onPressed,
-                      textColor: Colors.white,
-                      child: Text(name,style:  TextStyle(color: Colors.white, fontSize: 16.0)),
-      ).showCursorOnHover.moveUpOnHover,
-    );
-  }
-}
+//   const MenuButton({Key key,@required this.name,@required this.onPressed}) : super(key: key);
+//   @override
+//     Widget build(BuildContext context) {
+//     return Container(
+//       height:40,
+//       child: FlatButton(
+//                       onPressed: onPressed,
+//                       textColor: Colors.white,
+//                       child: Text(name,style:  TextStyle(color: Colors.white, fontSize: 16.0)),
+//       ).showCursorOnHover.moveUpOnHover,
+//     );
+//   }
+// }
 
 class CallToActionContainer extends StatelessWidget {
   final String topText;
@@ -106,112 +106,112 @@ class CallToActionButton extends StatelessWidget {
   }
 }
 
-class MainUIButton extends StatelessWidget {
-  final Function() onPressed;
-  final String text;
+// class MainUIButton extends StatelessWidget {
+//   final Function() onPressed;
+//   final String text;
 
-  const MainUIButton({Key key, @required this.onPressed, @required this.text}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return   MaterialButton(
-            hoverColor: Colors.white,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            color: Colors.grey[200],
-            onPressed: onPressed,
-            child: Text(text)).showCursorOnHover.moveUpOnHover;
-  }
-}
+//   const MainUIButton({Key key, @required this.onPressed, @required this.text}) : super(key: key);
+//   @override
+//   Widget build(BuildContext context) {
+//     return   MaterialButton(
+//             hoverColor: Colors.white,
+//             shape:
+//                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+//             color: Colors.grey[200],
+//             onPressed: onPressed,
+//             child: Text(text)).showCursorOnHover.moveUpOnHover;
+//   }
+// }
 
-enum CommonIcons{
-  CLOSE,
-  INFO,
-  LINK,
-  VERIFY,
-  GOTO
-}
+// enum CommonIcons{
+//   CLOSE,
+//   INFO,
+//   LINK,
+//   VERIFY,
+//   GOTO
+// }
 
 
-Widget iconButton({
-  @required CommonIcons icon,  
-  String toolTip,
-  Color color,
-  @required Function() onPressed
-  }) {
-  IconData iconData=Icons.question_answer;
-  switch (icon) {
-    case CommonIcons.CLOSE:
-        iconData= Icons.clear;
-      break;
-    case CommonIcons.INFO:
-        iconData= Icons.info_outline;
-      break;
-     case CommonIcons.LINK:
-          iconData= Icons.link;
-      break;
-    case CommonIcons.GOTO:
-          iconData= Icons.input;
-      break;
-    case CommonIcons.VERIFY:
-          iconData= Icons.verified_user;
-      break;
-    default:
-     break;
-  }
-  return (toolTip!=null)?Tooltip(message: toolTip, child:IconButton(icon: Icon(iconData), color: color, onPressed: onPressed).showCursorOnHover.moveUpOnHover)
-  :IconButton(icon: Icon(iconData), color: color, onPressed: onPressed).showCursorOnHover.moveUpOnHover;
+// Widget iconButton({
+//   @required CommonIcons icon,  
+//   String toolTip,
+//   Color color,
+//   @required Function() onPressed
+//   }) {
+//   IconData iconData=Icons.question_answer;
+//   switch (icon) {
+//     case CommonIcons.CLOSE:
+//         iconData= Icons.clear;
+//       break;
+//     case CommonIcons.INFO:
+//         iconData= Icons.info_outline;
+//       break;
+//      case CommonIcons.LINK:
+//           iconData= Icons.link;
+//       break;
+//     case CommonIcons.GOTO:
+//           iconData= Icons.input;
+//       break;
+//     case CommonIcons.VERIFY:
+//           iconData= Icons.verified_user;
+//       break;
+//     default:
+//      break;
+//   }
+//   return (toolTip!=null)?Tooltip(message: toolTip, child:IconButton(icon: Icon(iconData), color: color, onPressed: onPressed).showCursorOnHover.moveUpOnHover)
+//   :IconButton(icon: Icon(iconData), color: color, onPressed: onPressed).showCursorOnHover.moveUpOnHover;
   
-}
+// }
 
 
 
 
 
-Widget closeIcon({@required Function() onPressed}) => Align(
-      alignment: Alignment.topRight,
-      child: IconButton(
-          icon: Icon(Icons.close), color: Colors.red, onPressed: onPressed).showCursorOnHover.moveUpOnHover,
-    );
+// Widget closeIcon({@required Function() onPressed}) => Align(
+//       alignment: Alignment.topRight,
+//       child: IconButton(
+//           icon: Icon(Icons.close), color: Colors.red, onPressed: onPressed).showCursorOnHover.moveUpOnHover,
+//     );
 
 
 
-Widget googleSignInWidget(
-        {@required Function() onTap, double h = 50.0, double w = 120}) =>
-    Padding(
-      padding: EdgeInsets.only(right: 10.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          width: w,
-          height: h,
-          child: Image.network(
-              'https://www.wethebuilders.com/assets/google-signin-91dc17d460e647bc21b07825041e93c6.png'),
-        ),
-      ),
-    );
+// Widget googleSignInWidget(
+//         {@required Function() onTap, double h = 50.0, double w = 120}) =>
+//     Padding(
+//       padding: EdgeInsets.only(right: 10.0),
+//       child: InkWell(
+//         onTap: onTap,
+//         child: Container(
+//           width: w,
+//           height: h,
+//           child: Image.network(
+//               'https://www.wethebuilders.com/assets/google-signin-91dc17d460e647bc21b07825041e93c6.png'),
+//         ),
+//       ),
+//     );
 
 
- Widget loggedIn({Function() onPress, String displayName=""}) => InkWell(
-        onTap:  onPress,
-        child: Container(
-            width: 120.0,
-            height: 50.0,
-            child: Center(
-                child: Text(
-              displayName,
-              style: TextStyle(color: Colors.white),
-            ))),
-      );
+//  Widget loggedIn({Function() onPress, String displayName=""}) => InkWell(
+//         onTap:  onPress,
+//         child: Container(
+//             width: 120.0,
+//             height: 50.0,
+//             child: Center(
+//                 child: Text(
+//               displayName,
+//               style: TextStyle(color: Colors.white),
+//             ))),
+//       );
 
-  Widget notLoggedIn({Function() onPress}) => InkWell(
-        onTap: onPress,
-        child: Container(
-            width: 120.0,
-            height: 50.0,
-            child: Center(
-                child: Text(
-              "Login",
-              style: TextStyle(color: Colors.white),
-            ))),
-      );
+//   Widget notLoggedIn({Function() onPress}) => InkWell(
+//         onTap: onPress,
+//         child: Container(
+//             width: 120.0,
+//             height: 50.0,
+//             child: Center(
+//                 child: Text(
+//               "Login",
+//               style: TextStyle(color: Colors.white),
+//             ))),
+//       );
 

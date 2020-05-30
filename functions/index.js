@@ -4,6 +4,11 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
 const handlebars = require('handlebars');
+const cors = require('cors')({origin: true});
+const { v4: uuidv4 } = require('uuid');
+const secret = require('./secret');
+const nodemailer = require('nodemailer');
+
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -11,10 +16,8 @@ const db = admin.firestore();
 var source = fs.readFileSync(path.join(__dirname, 'templates/request.hbs'), 'utf8');
 var template = handlebars.compile(source);
 
-
-
 exports.sendMailFB = functions.https.onRequest(async (req, res) => {
-    // cors(req, res, () => {
+     //cors(req, res, () => {
          // getting dest email by query string
         const id =uuidv4();
         const dest = req.query.dest;
@@ -37,15 +40,9 @@ exports.sendMailFB = functions.https.onRequest(async (req, res) => {
         });
         console.log(writeResult.id);
         return res.send({result: `Message with ID: ${writeResult.id} added.`});
-       
+  // });
  });
  
-
-
-const cors = require('cors')({origin: true});
-const { v4: uuidv4 } = require('uuid');
-const secret = require('./secret');
-const nodemailer = require('nodemailer');
 
  let transporter = nodemailer.createTransport({
     service: 'gmail',

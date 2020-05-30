@@ -3,26 +3,27 @@ import 'package:delaware_makes/pages/home/home_constants.dart';
 import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/state/state.dart';
-import 'package:delaware_makes/utils/utils.dart';
-import 'package:domore/state/custom_model.dart';
-import 'package:domore/state/new_data_repo.dart';
+import 'package:domore/domore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 //  "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.15752-9/s2048x2048/97004143_237907727468307_3348191839210438656_n.jpg?_nc_cat=100&_nc_sid=b96e70&_nc_ohc=f5XU8kL6bVIAX9WZaBz&_nc_ht=scontent.fphl2-1.fna&_nc_tp=7&oh=d91b91d0aa5c5392ce61cd4ab6ee8bd1&oe=5EE9CFBA",
 class MakerSection extends StatelessWidget {
   final bool isMobile;
+  final List<String> groupsNames;
   const MakerSection({
     Key key,
-    @required this.isMobile,
+    @required this.isMobile, 
+    @required this.groupsNames,
   }) : super(key: key);
+
   Widget cta(BuildContext context) => Center(
         child: Container(
           width: 300.0,
           child: CallToActionButton(
             name: "Get Involved",
              onPressed:  () {
-            tappedMenuButton(context, "/designs");},),
+            tappedMenuButton(context, "/resources");},),
         ),
       );
 
@@ -32,37 +33,18 @@ class MakerSection extends StatelessWidget {
     TextStyle aTextStyle= Theme.of(context).textTheme.headline5;
    TextStyle bTextStyle= Theme.of(context).textTheme.headline6;
 
-    var dataRepo= locator<DataRepo>();
-    List<CustomModel> groupsData=dataRepo.getItemsWhere("groups");
-    groupsData.forEach((groupMod) =>groupMod.addAssociatedIDs(otherCollectionName: "claims", getOneToMany: dataRepo.getOneToMany) );
-    groupsData.sort((a,b) => 
-          b.getVal("claims", associated:true, alt:[]).length.compareTo(
-          a.getVal("claims", associated:true, alt:[]).length)
-          );
-   // safeGet(map: b, key:"claims", alt:[]).length.compareTo(safeGet(map: a, key:"claims", alt:[]).length));
-  if(groupsData.length>13)groupsData= groupsData.sublist(0, 13);
-   List<String> groupsNames = [];
-   groupsData.forEach((value) {
-     String name=  value.getVal("name");
-     if(name!=null)groupsNames.add(name);
-   });
+
 
     return isMobile
         ? Container(height:850.0,
           child:
            Column(
            children:[
-            SizedBox(
-              height: 30.0,
-            ),
+            SizedBox( height: 30.0,),
             TitleText(title:makerCTA),
-            SizedBox(
-              height: 20.0,
-            ),
+            SizedBox(height: 20.0,),
             cta(context),
-            SizedBox(
-              height: 30.0,
-            ),
+            SizedBox(height: 30.0,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -199,7 +181,38 @@ class MakerSection extends StatelessWidget {
           ),
         );
   }
-  // Widget share(bool mobile) => Container(
+
+  Widget designs(BuildContext context,bool mobile) => Container(
+      width: mobile ?tileW:tileWdesk,
+      height: mobile ?tileH:tileHdesk,
+      child: StylizedImageBox(
+          onPressed: () {
+            tappedMenuButton(context, "/resources");
+          },
+          bottomText: "Help 3D Print PPE",
+          url:"https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/92470100_10222513279318993_2011992938938105856_o.jpg?_nc_cat=103&_nc_sid=825194&_nc_ohc=ZSuZYyg4pvoAX8gClpc&_nc_ht=scontent.fphl2-1.fna&oh=704f95c416f69fbce85cb118565722ca&oe=5EE55C61"));
+
+
+Widget locations(BuildContext context, bool mobile) => Container(
+      width: mobile ?tileW:tileWdesk,
+      height: mobile ?tileH:tileHdesk,
+      child: StylizedImageBox(
+        //topRightWidget: iconButton(icon: CommonIcons.INFO, onPressed: null, ),
+          onPressed: () {
+             tappedMenuButton(context, "/designs");
+            },
+          bottomText: "Design Library",
+          url: "https://scontent.fphl2-3.fna.fbcdn.net/v/t1.0-9/98574660_3256293901057024_8901266270092001280_o.jpg?_nc_cat=104&_nc_sid=825194&_nc_ohc=JU1HBc98GGQAX-cbneO&_nc_ht=scontent.fphl2-3.fna&oh=b6ec3202f102164310aebdd1ec0481b4&oe=5EF4AA42"));
+}
+
+
+  // TextStyle( color:Colors.white, fontSize: 20.0),   
+  //TextStyle( color:Colors.white, fontSize: 16.0)
+   //TextStyle( color:Colors.white, fontSize: 20.0),
+   // TextStyle( color:Colors.white, fontSize: 20.0),
+    //TextStyle( color:Colors.white, fontSize: 20.0),
+
+      // Widget share(bool mobile) => Container(
   //     width: 220.0,
   //     height: 220.0,
   //     child: StylizedImageBox(
@@ -212,35 +225,3 @@ class MakerSection extends StatelessWidget {
   //     child: StylizedImageBox(
   //         bottomText: "Discover Other Designs",
   //         url: "https://scontent.fphl2-4.fna.fbcdn.net/v/t1.0-9/97340636_3236644053022009_4108035780813783040_o.jpg?_nc_cat=110&_nc_sid=825194&_nc_ohc=ZniW0vNucD4AX8pDhI4&_nc_ht=scontent.fphl2-4.fna&oh=8eb173d87f38e05e32da6604e33ebc9d&oe=5EE3D2F4"));
-
-  Widget designs(BuildContext context,bool mobile) => Container(
-      width: mobile ?tileW:tileWdesk,
-      height: mobile ?tileH:tileHdesk,
-      child: StylizedImageBox(
-          onPressed: () {
-            tappedMenuButton(context, "/designs");
-          },
-          bottomText: "Learn More",
-          url:"https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/92470100_10222513279318993_2011992938938105856_o.jpg?_nc_cat=103&_nc_sid=825194&_nc_ohc=ZSuZYyg4pvoAX8gClpc&_nc_ht=scontent.fphl2-1.fna&oh=704f95c416f69fbce85cb118565722ca&oe=5EE55C61"));
-
-
-Widget locations(BuildContext context, bool mobile) => Container(
-      width: mobile ?tileW:tileWdesk,
-      height: mobile ?tileH:tileHdesk,
-      child: StylizedImageBox(
-        //topRightWidget: iconButton(icon: CommonIcons.INFO, onPressed: null, ),
-          onPressed: () {
-             tappedMenuButton(context, "/map");
-            },
-          bottomText: "Help Produce Items",
-          url: "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/93378709_3139143336119330_2227783348703461376_o.jpg?_nc_cat=103&_nc_sid=825194&_nc_ohc=f5BgQjmFw74AX9AmNSt&_nc_ht=scontent.fphl2-1.fna&oh=d815e1bbda06cc71ad42149fca2a50ca&oe=5EEA94D4"));
-
-
-}
-
-
-  // TextStyle( color:Colors.white, fontSize: 20.0),   
-  //TextStyle( color:Colors.white, fontSize: 16.0)
-   //TextStyle( color:Colors.white, fontSize: 20.0),
-   // TextStyle( color:Colors.white, fontSize: 20.0),
-    //TextStyle( color:Colors.white, fontSize: 20.0),

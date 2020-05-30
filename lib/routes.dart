@@ -1,5 +1,6 @@
 
 import 'package:delaware_makes/pages/pages.dart';
+import 'package:delaware_makes/pages/resources/resources_page.dart';
 import 'package:delaware_makes/root_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
@@ -23,7 +24,10 @@ class Routes {
   static String designs= "/designs";
   static String id= "users/:id";
   static String locations = "/map";
+  static String resources = "/resources";
   static String datastruct = "/datastruct";
+  //static String resources = "/resources";
+
 
   static dynamic route(){
       return {
@@ -42,6 +46,7 @@ class Routes {
     router.define(designs, handler: designsHandler);
     router.define(id, handler: usersHandler);
     router.define(aboutUs, handler: aboutUsHandler);
+    router.define(resources, handler: resourcesHandler);
     router.define(locations, handler: locRouterHandler);
   }
 }
@@ -62,6 +67,10 @@ var profileHandler = Handler(
 var designsHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:DesignsPage(),currentRoute:"/designs");
+});
+var resourcesHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return RootPage(screen:ResourcesPage(),currentRoute:"/resources");
 });
 var aboutUsHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {

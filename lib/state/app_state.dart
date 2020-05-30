@@ -1,13 +1,12 @@
 import 'dart:convert';
 
+import 'package:delaware_makes/counters/counters.dart';
 import 'package:delaware_makes/counters/request_model.dart';
+import 'package:delaware_makes/integrations/slack/slack_src.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/constant.dart';
 import 'package:delaware_makes/utils/secrets.dart';
-import 'package:domore/forms/form.dart';
-import 'package:domore/login/auth_state.dart';
-import 'package:domore/state/custom_model.dart';
-import 'package:domore/state/new_data_repo.dart';
+import 'package:domore/domore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:delaware_makes/utils/utils.dart';
@@ -28,14 +27,17 @@ class AppState extends ChangeNotifier {
   AppState();
   bool loading=false;
 
+  List<DesignModelCount> designs;
+  List<RequestModelCount> requests;
+  Map<String, OrgModelCount> orgModels = {};
+
+  
   CustomModel getProfileData() => userProfileData ?? null;
 
   init() {
     dataRepo = locator<DataRepo>();
   }
   setSize(Size newSize){
-   //.. if(_size==null){_size = newSize;notifyListeners();}
-   // else 
     _size = newSize;
   }
   bool isMobile()=>(_size!=null && _size.width<=650);
@@ -55,12 +57,15 @@ class AppState extends ChangeNotifier {
         print("Wait");
       }
     }
+    initDesigns();
+    initRequests();
     isReady = true;
-    dataRepo.collections.forEach((key, value) {
-      print(value.models.length);
-    });
+
     notifyListeners();
   }
+
+
+
 
  initLogin(){
    isLoginActive=true;
@@ -68,13 +73,17 @@ class AppState extends ChangeNotifier {
  }
   onSignIn(FirebaseUser firebaseUser, bool isSignUp){
       if(isSignUp){}
-    else currentUser = dataRepo.getItemByID("users", firebaseUser.uid);
+      else currentUser = dataRepo.getItemByID("users", firebaseUser.uid);
 
     isLoginActive=false;
     userProfileData = currentUser;
     if(currentUser!=null)loggedIn=true;
-    
+  
     notifyListeners();
+  }
+   onFormClose(){
+      isLoginActive=false;
+      notifyListeners();
   }
 
   bool isCurrentUser() {
@@ -100,6 +109,89 @@ class AppState extends ChangeNotifier {
   }
 
 
+
+  initDesigns(){
+      designs = [
+      DesignModelCount(
+          designID: "5f2009e0-55a8-4d4b-aa6a-a9becf5c9392",
+          designName: "Face Shields"),
+      DesignModelCount(
+          designID: "fa900ce5-aae8-4a69-92c3-3605f1c9b494",
+          designName: "Ear Savers"),
+    ];
+    designs.forEach((element) {
+      element.init();
+    });
+  }
+
+initRequests(){
+      orgModels = {};
+      requests = [];
+      dataRepo.getModels("requests").forEach((requestID, model) {
+      //  model.addAssociatedIDs(otherCollectionName: null, getOneToMany: null)
+        RequestModelCount r = RequestModelCount(requestID);
+        r.init(dataRepo);
+        requests.add(r);
+        if (model.data.containsKey("orgID")) {
+          String orgID = model.data["orgID"];
+          if (!orgModels.containsKey(orgID)) {
+            CustomModel orgData = dataRepo.getItemByID("orgs", orgID);
+            if (orgData != null) orgModels[orgID] = OrgModelCount(orgData);
+          }
+          try {
+            orgModels[orgID].addRequestQuantities(r);
+          } catch (e) {}
+        }
+      });
+      requests.sort((a, b) => b.remaining().compareTo(a.remaining()));
+}
+
+
+
+
+
+
+
+  
+
+  Future<bool> submitForm(bool isDone) async {
+    print("SUBMITFORM");
+    bool isSuccessful=false;
+    loading=true;
+     notifyListeners();
+    
+    if(currentFormModel.name=="request")isSuccessful= await _submitRequestForm();
+    else if(currentFormModel.name=="update")isSuccessful= await _submitUpdateForm();
+    else if(currentFormModel.name=="claim")isSuccessful= await _submitClaimForm();
+    if(isDone){
+      currentFormModel= null;
+      isFormActive=false;
+    }
+  
+    initDesigns();
+    initRequests();
+    loading=false;
+    notifyListeners();
+    return isSuccessful;
+  }
+
+  dismissForm()  {
+    print("Dismiss FORM");
+    isFormActive=false;
+    currentFormModel= null;
+    notifyListeners();
+  }
+
+
+/*
+
+
+Request
+
+
+ */
+
+
   initRequest() {
     isFormActive=true;
      notifyListeners();
@@ -121,106 +213,41 @@ class AppState extends ChangeNotifier {
     );
     notifyListeners();
   }
-  initUpdate() {
-
-  }
-  initClaim(RequestModelCount requestModelCount) {
-    print("INIT CLAIM");
-    //var groups = dataRepo.getItemsWhere("groups");
-    isFormActive=true;
-    String designID =requestModelCount.request.getVal("id", collection:"designs");
-    Map<String, dynamic> buffer={
-      "orgName":requestModelCount.request.getVal("name", collection:"orgs"),
-      "orgAddress" : requestModelCount.request.getVal("address", collection:"orgs"),
-      "designName":requestModelCount.request.getVal("name", collection:"designs"),
-      "url":safeGet(key:  designID, map: icons, alt:placeHolderUrl),
-     // "groupsData":groups,
-      "max":requestModelCount.remaining(),
-    };
-    print(buffer);
-    currentFormModel = FormModel(
-      name:"claim",
-      buffer:buffer, //onSubmit: (data){},
-      tabs: [
-      FormTabModel(formDataCallback: claimInfo),
-      FormTabModel(formDataCallback: claimVer),
-      FormTabModel(
-        formDataCallback:(buf)=> nextSteps(steps: [
-          "Connection ",
-          "Delivery ",
-          "Update "
-        ])),
-      ], 
-    );
-    notifyListeners();
-  }
-  
-  dismissForm()  {
-    print("Dismiss FORM");
-    isFormActive=false;
-    currentFormModel= null;
-    notifyListeners();
-  }
-
-  submitForm() async {
-    print("SUBMITFORM");
-    loading=true;
-    isFormActive=false;
-    if(currentFormModel.name=="request")await _submitRequestForm();
-    else if(currentFormModel.name=="update")await _submitUpdateForm();
-    else if(currentFormModel.name=="claim")await _submitClaimForm();
-    currentFormModel= null;
-    loading=false;
-    notifyListeners();
-  }
-  _submitUpdateForm() async{
-
-  }
-  _submitClaimForm() async{
-
-  }
 
   Future<bool> _submitRequestForm() async{
           print("SUBMIT Request");
+          Slack slack = new Slack('https://hooks.slack.com/services/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');
+         
       final Map reqs =safeGet(key: "requests", map: currentFormModel.buffer, alt: {});
      String now = DateTime.now().toUtc().toString();
     
+    // adds the items from the form to the org map, additionally adds any other items, that would not be added through the form
       Map<String, dynamic> reqOrg = currentFormModel.toMap(
         checkItems:{
-        "address":"address",
-        "contactName":"name",
-        "contactEmail":"email",
-        "name":"orgName",
-        "type": "orgType",
-        "deliveryInstructions":"deliveryInstructions",
+        "address":"address",       "contactName":"name",          "contactEmail":"email",
+        "name":"orgName",          "type": "orgType",             "deliveryInstructions":"deliveryInstructions",
       },additionalItems: {
-        "phone":  "",
-        "website": "",
-        "lat":  null,
-        "lng": null,
-        "createdAt": now,
-        "lastModified": now,
-        "id":generateNewID(),
-        "isVerified":false
-      }
-      );
+        "phone":  "",           "website": "",
+        "lat":  null,           "lng": null,
+        "createdAt": now,       "lastModified": now,
+        "id":generateNewID(),   "isVerified":false
+      });
 
       // String newOrgID = generateNewID();
-      String addr = reqOrg["address"];
-     // safeGet(key: "address", map: currentFormModel.buffer, alt: null);
+      String addr = reqOrg["address"]; // safeGet(key: "address", map: currentFormModel.buffer, alt: null);
+
       if(addr!=null){
         addr = addr.replaceAll(" ", "+").replaceAll("/", "").replaceAll("#", "");
         var placeUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=$addr&key=$googleAPIKey";
         var placeResponse = await http.post(placeUrl, body: {});
         try{
           Map loc = json.decode(placeResponse.body);
+          print(loc);
           Map loca = loc["results"][0]["geometry"]["location"];
+          print(loca);
           reqOrg["lat"]= loca["lat"];
           reqOrg["lng"]= loca["lng"];
-        }catch(e){
-          print(addr);
-          print("error");
-        }
+        }catch(e){ print(addr); print("error"); }
       }
       CustomModel orgModel = await dataRepo.addModel(
         data: reqOrg,
@@ -234,15 +261,17 @@ class AppState extends ChangeNotifier {
         int q = int.tryParse(quantity)??0;
         if (q != 0) {  //String newReqID = generateNewID();
           Map<String, dynamic> reqData = {
-              "id":generateNewID(),
-              "orgID":orgModel.id,
-              "quantity": quantity,
-              "designID": designID,
-              "createdAt": now,
-              "lastModified": now,
-              "requestSource": "website",
+              "id":generateNewID(),      "orgID":orgModel.id,
+              "quantity": (quantity is String)?int.tryParse(quantity)??0:quantity,
+              "designID": designID,     "createdAt": now,
+              "lastModified": now,      "requestSource": "website",
               "isVerified": false,
         };
+        CustomModel d= dataRepo.getItemByID("designs", designID);
+        String cd = d.getVal("name");
+        print('New request from ${reqOrg["contactName"]}(${reqOrg["contactName"]}) at ${reqOrg["name"]}(${reqOrg["address"]}) for ${reqData["quantity"]} ${cd}s');
+          Message message = new Message('New request from ${reqOrg["contactName"]}(${reqOrg["contactName"]}) at ${reqOrg["name"]}(${reqOrg["address"]}) for $reqData ${cd}s',username:'bar-user');      
+          slack.send(message);
         
           reqsData.add(reqData);
         }
@@ -255,20 +284,190 @@ class AppState extends ChangeNotifier {
       );
       }
     
-     String contactName = reqOrg["contactName"];
-      String contactEmail = reqOrg["contactEmail"];
-      String orgName = orgModel.getVal("name");
-      String code = orgModel.id.substring(0,5);
-    
-     
-      var url = 'https://us-central1-million-more-makers.cloudfunctions.net/sendMailFB?dest=$contactEmail&contactName=$contactName&orgName=$orgName&code=$code';
-  //   print(url);
-        var response = await  http.post(url, body: {});
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+    //  String contactName = reqOrg["contactName"];
+    //   String contactEmail = reqOrg["contactEmail"];
+    //   String orgName = orgModel.getVal("name");
+    //   String code = orgModel.id.substring(0,5);
+
+    //  var url = 'https://us-central1-million-more-makers.cloudfunctions.net/sendMailFB?dest=$contactEmail&contactName=$contactName&orgName=$orgName&code=$code';
+   //  print(url);
+      //   var response = await  http.post(url, body: {});
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
       await Future.delayed(Duration(milliseconds: 5));
       return true;
   }
+
+
+
+
+/*
+
+Claim
+
+*/
+
+
+    initClaim(String requestID, int max) {
+    print("INIT CLAIM");
+    CustomModel request = dataRepo.getItemByID("requests", requestID);
+    // request.addAssociatedIDs(otherCollectionName: "resources", getOneToMany: dataRepo.getOneToMany);
+    isFormActive=true;
+    String designID =request.getVal("id", collection:"designs");
+    Map<String, dynamic> buffer={
+      "orgName":request.getVal("name", collection:"orgs"),
+      "orgAddress" : request.getVal("address", collection:"orgs"),
+      "deliveryInstructions" : request.getVal("deliveryInstructions", collection:"orgs"),
+      "designName":request.getVal("name", collection:"designs"),
+      "orgID": request.getVal("id", collection:"orgs"),
+      "requestID": request.id,
+      "designID": request.getVal("id", collection:"designs"),
+      "url":safeGet(key:  designID, map: icons, alt:placeHolderUrl),
+      "isVerified": true, // "groupsData":groups,
+      "max":max,
+      //requestModelCount.remaining()
+    };
+  //  print(buffer);
+    currentFormModel = FormModel(
+      name:"claim",
+      buffer:buffer, //onSubmit: (data){},
+      tabs: [
+      FormTabModel(formDataCallback: claimInfo),
+      FormTabModel(formDataCallback: claimVer),
+      FormTabModel(
+        formDataCallback:(buf)=> nextSteps(
+          title: "Next Steps",
+          steps: [
+          "Connection ",
+          "Delivery ",
+          "Update "
+        ])),
+      ], 
+    );
+    notifyListeners();
+  }
+  Future<bool> _submitClaimForm() async{
+      print("SUBMIT CLAIM");
+      List<CustomModel> groups = dataRepo.getModels("groups").values.toList();
+      int i=0;
+      String code = currentFormModel.buffer["verificationCode"];
+       print(dataRepo.collections["claims"].models.length);
+      CustomModel group;
+       while (i <groups.length && group==null){
+        String c=groups[i].getVal("verificationCode");
+        if(code==c){
+          group =  groups[i];
+        } i++;
+      }
+      if(group==null){ print("not found");
+        return false;
+      }else{ print("found");
+           String now = DateTime.now().toUtc().toString();
+    
+      Map<String, dynamic> reqCl = currentFormModel.toMap(
+        checkItems:{
+        "orgID":"orgID",        "requestID":"requestID",        "designID":"designID",
+        "quantity":"quantity",  "userName":"name"
+      },additionalItems: {
+        "createdAt": now,        "lastModified": now,
+        "id":generateNewID(),    "isVerified":true,        "groupID":group.id
+      });
+      try{
+        reqCl["quantity"]=int.tryParse(reqCl["quantity"])??0;
+        print(reqCl["quantity"]);
+      }catch(e){}
+
+     CustomModel m= await dataRepo.addModel(
+        data: reqCl, 
+        collectionName:"claims", 
+        saveToFirebase: true
+        );
+        dataRepo.collections["claims"].models[m.id]=m;
+        print(dataRepo.collections["claims"].models.length);
+      return true;
+     // createModel(modelData: claim, collectionName: "claims");
+      //dataRepo.addRowToSheet(collectionName: "claims", vals: claimToSheet(claim, dataRepo));
+      }
+   
+  }
+
+/*
+
+Update
+*/
+
+
+
+initUpdate(CustomModel request, CustomModel claimModel) {
+     print("INIT Update");
+    //var groups = dataRepo.getItemsWhere("groups");
+    isFormActive=true;
+   // dataRepo = locator<DataRepo>();
+   // var groups = dataRepo.getItemsWhere("groups");
+   // var designData = dataRepo.getItemByID("designs", claimModel.getVal("designID"));
+    String designID =request.getVal("id", collection:"designs");
+    Map<String, dynamic> buffer={
+      "orgID": request.getVal("id", collection:"orgs"),
+      "requestID": request.id,
+      "designID": request.getVal("id", collection:"designs"),
+      "quantity":claimModel.getVal("quantity"),
+      "claimID":claimModel.id,
+      "url":safeGet(key:  designID, map: icons, alt:placeHolderUrl),
+      "isVerified": true,
+    };
+    
+    currentFormModel = FormModel(
+      name:"update",
+      buffer:buffer, //onSubmit: (data){},
+      tabs: [
+          FormTabModel(formDataCallback:updateInfo,),
+      ]
+    );
+    notifyListeners();
+  }
+
+  Future<bool> _submitUpdateForm() async{
+   
+      String now = DateTime.now().toUtc().toString();
+     List<CustomModel> groups = dataRepo.getModels("groups").values.toList();
+      int i=0;
+      String code = currentFormModel.buffer["verificationCode"];
+   //   print(code);
+      CustomModel group;
+      if(code ==null)return false;
+      while (i <groups.length && group==null){
+        String c=groups[i].getVal("verificationCode");
+      //  print(c);
+        if(code==c){
+          group =  groups[i];
+        } i++;
+      }
+      if(group==null){ print("not found");  }
+      else{ print("found");
+     // Map<String, dynamic> resourceData = newResource(map, newResourceID, group["id"]);
+          Map<String, dynamic> reqOrg = currentFormModel.toMap(
+        checkItems:{
+        "designID": "designID",   "claimID":"claimID",  "orgID":"orgID",
+        "requestID":"requestID",  "userID": "userID",
+        "userName":"name",     "url":"url", "quantity":"quantity"
+      },additionalItems: {
+        "type": "Update",   "createdAt": now,
+        "lastModified": now, "id":generateNewID(),
+        "isVerified":true });
+    //s  reqOrg["quantity"]=int.tryParse(reqOrg["quantity"])??0;
+     
+      CustomModel m=await dataRepo.addModel(
+        data: reqOrg, 
+        collectionName:"resources", 
+        saveToFirebase: true
+        );
+        dataRepo.collections["resources"].models[m.id]=m;
+     //  dataRepo.addRowToSheet(collectionName: "resources",vals: resourceToSheet(resourceData, dataRepo));
+      }
+     // dataRepo.collections["resources"].models[m.id]
+      return true;
+  }
+
 }
 
 
@@ -304,7 +503,7 @@ Map<String, dynamic> userInfo(Map buffer)=>{
             {"type":"formEntryField", "text":"Name","b":20,"key":"name", "validator":"empty"},
             {"type":"description", "text":"Email:"},
             {"type":"formEntryField", "text":"Email", "b":20,"key":"email","validator":"email"},
-             {"type":"expanded", },
+            {"type":"expanded", },
             {"type":"submitButton", "text":"Next"},
     ]
     };
@@ -330,7 +529,7 @@ Map<String, dynamic> orgInfo(Map buffer)=>{
             {"type":"description", "text":"Organization Type:"},
             {"type":"dropdown", "text":"Select From List", "b":20, "items":org, "key":"orgType", },
             {"type":"expanded", },
-            {"type":"submitButton", "text":"Next",},
+            {"type":"submitButton", "text":"Next"},
     ]
    };
 
@@ -341,28 +540,18 @@ Map<String, dynamic> requestInfo(Map buffer){
     CustomModel des= designModel;
     items.add({
       "type":"imageInputForm", 
-      "text":des.getVal("name", alt:""),
-     // safeGet(key: "name", map: des.designData, alt: ""),
-      "url":des.getVal("url", alt:""),
-    //  safeGet(key: "url", map: designData, alt: ""),
+      "text":des.getVal("name", alt:""),// safeGet(key: "name", map: des.designData, alt: ""),
+      "url":des.getVal("url", alt:""), //  safeGet(key: "url", map: designData, alt: ""),
       "b":20,
-      "key":des.id
-     // designData["id"]
+      "key":des.id// designData["id"]
       });
       requests[des.id]="0";
   });
   items.add({"type":"submitButton", "text":"Next",});
   return {
-      "id":"reqInfo",
-      "isValidated":false,
-      "formKey": "",
-      "icon":Icons.local_mall,
-      "tooltip":"Requests",
-      "h":500.0,
-      "items":items,
-      "buffer":{
-        "requests":requests
-      }
+      "id":"reqInfo",       "isValidated":false,     "formKey": "",       "icon":Icons.local_mall,
+      "tooltip":"Requests", "h":500.0,               "items":items,
+      "buffer":{"requests":requests}
    };
 }
 Map<String, dynamic> deliveryInfo(Map buffer)=>{
@@ -377,10 +566,10 @@ Map<String, dynamic> deliveryInfo(Map buffer)=>{
       },
       "items":[
           {"type":"title", "text":"Delivery Info"},
-          {"type":"description", "text":"Delivery Instructions:", },
+          {"type":"description", "text":"Delivery Instructions:", "tooltip":"Please enter any information the groups would need to deliver items to you"},
           {"type":"formEntryField", "text":"Delivery Instructions","key": "deliveryInstructions","maxLines":6, "tooltip": "Please enter any information the groups would need to deliver items to you"},
            {"type":"expanded", },
-          {"type":"submitButton", "text":"Submit"},
+          {"type":"submitButton", "text":"Submit","submit":true},
         ]
    };
 
@@ -403,7 +592,7 @@ Map<String, dynamic> loginInfo(Map buffer)=>{
     };
 
 Map<String, dynamic> claimInfo(Map buffer){
-  print(buffer);
+  //print(buffer);
  return  {
     "id":"claimInfo",
     "icon":Icons.info_outline,
@@ -439,13 +628,13 @@ Map<String, dynamic> claimVer(Map buffer)=>{
             {"type":"description", "text":"Quantity Claiming:"},
             {"type":"formEntryField", "text":"quantity", "b":20,"key":"quantity"},
             {"type":"description", "text":"Verification Code:", "tooltip":" If you don’t have a verification code, request one by emailing delawaremakes@gmail.com"},
-            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verification", "validator":"verification"},
-            {"type":"expanded", },
-            {"type":"submitButton", "b":20, "text":"Submit"},
+            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verificationCode", "validator":"verification"},
+            //{"type":"expanded", },
+            {"type":"submitButton", "b":20, "text":"Submit", "submit":true},
     ]
     };
 Map<String, dynamic> claimReview(Map buffer)=>{
-    "id":"claimVer",
+    "id":"claimReview",
     "icon":Icons.person_outline,
     "h":550.0,
     "tooltip":"Claim Info",
@@ -458,9 +647,9 @@ Map<String, dynamic> claimReview(Map buffer)=>{
             {"type":"description", "text":"Quantity Claiming:"},
             {"type":"formEntryField", "text":"quantity", "b":20,"key":"quantity"},
             {"type":"description", "text":"Verification Code:", "tooltip":" If you don’t have a verification code, request one by emailing delawaremakes@gmail.com"},
-            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verification", "validator":"verification"},
-            {"type":"expanded", },
-            {"type":"submitButton", "b":20, "text":"Done"},
+            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verificationCode", "validator":"verification"},
+          //  {"type":"expanded", },
+            {"type":"submitButton", "b":20, "text":"Done", "submit":true},
     ]
     };
 Map<String, dynamic> updateInfo(Map buffer)=>{
@@ -477,13 +666,10 @@ Map<String, dynamic> updateInfo(Map buffer)=>{
     },
     "items":[
             {"type":"title", "text":"Update", "b":20},
-            {"type":"description", "text":"Name:"},
-            {"type":"formEntryField", "text":"Name","key":"name"},
             {"type":"description", "text":"Verification Code:", "tooltip":" If you don’t have a verification code, request one by emailing delawaremakes@gmail.com"},
-            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verification","validator":"verification"},
+            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verificationCode","validator":"verification"},
             {"type":"imageUpload", "text":"Upload", "b":20,"key":"url"},
-            {"type":"expanded", },
-            {"type":"submitButton", "b":20, "text":"Submit"},
+            {"type":"submitButton", "b":20, "text":"Submit", "submit":true},
       ]
     };
 Map<String, dynamic> materialRequestInfo()=>{
@@ -498,7 +684,7 @@ Map<String, dynamic> materialRequestInfo()=>{
     },
     "items":[
             {"type":"title", "text":"Claim Information", "b":20},
-            {"type":"description", "text":"Who are you making the shields for:", "tooltip":"Please enter any information the groups would need to deliver items to you"},
+            {"type":"description", "text":"Who are you making the shields for:", },
             {"type":"formEntryField", "text":"End User Information","b":20,"key":"info", "maxlines":3},
             {"type":"description", "text":"Approximately How Many are Needed?"},
             {"type":"formEntryField", "text":"quantity", "b":20,"key":"quantity", "validator":"int"},
@@ -506,9 +692,19 @@ Map<String, dynamic> materialRequestInfo()=>{
     ]
     };
 
-
-Map<String, dynamic> nextSteps({@required List<String> steps}){
-   List items = [{"type":"title", "text":"Request Info"}];
+Map<String, dynamic> claimDeliveryInfo(Map buffer)=>{
+    "id":"claimDelivery",
+    "h":550.0,
+    "tooltip":"Delivery",
+     "buffer":{
+    },
+    "items":[
+            {"type":"title", "text":"Claim Review", "b":20},
+            {"type":"submitButton", "b":20, "text":"Done"},
+    ]
+    };
+Map<String, dynamic> nextSteps({@required List<String> steps, @required String title}){
+   List items = [{"type":"title", "text":title}];
    for (int i =0; i<steps.length; i++){
      items.add({"type":"description", "text":"$i. ${steps[i]}"});
    }
@@ -524,244 +720,3 @@ Map<String, dynamic> nextSteps({@required List<String> steps}){
 }
 
 
-
-
-   // CustomModel newOrg = CustomModel(
-      //   data:reqOrg, 
-      //   fields: dataRepo.getFields("orgs"), 
-      //   collectionName: "orgs"
-      // );
-      
-     // await dataRepo.createModel(modelData: reqOrg, collectionName: "orgs");
-        
-
-Map<String, dynamic> newOrg(Map map, String id, String now) {
-     Map<String, dynamic> out= 
-     { "id": id,
-      "isVerified": false,
-      "contactName": safeGet(key: "name", map: map, alt: ""),
-      "contactEmail": safeGet(key: "email", map: map, alt: ""),
-      "name": safeGet(key: "orgName", map: map, alt: ""),
-      "address": safeGet(key: "address", map: map, alt: ""),
-      "phone": safeGet(key: "phone", map: map, alt: ""),
-      "type": safeGet(key: "type", map: map, alt: ""),
-      "website": safeGet(key: "website", map: map, alt: ""),
-      "lat": safeGet(key: "lat", map: map, alt: null),
-      "lng": safeGet(key: "lng", map: map, alt: null),
-      "deliveryInstructions":  safeGet(key: "deliveryInstructions", map: map, alt: ""),
-      "createdAt": now,
-      "lastModified": now,
-    };
-    return out;
-    }
-Map<String, dynamic> newRequest(Map<String, dynamic> orgData, String designID,
-        int quantity, String id, String now) {
-   Map<String, dynamic> out=  {
-      "id": id,
-      "orgID": safeGet(key: "id", map: orgData, alt: ""),
-      "designID": designID,
-      "userID": safeGet(key: "userID", map: orgData, alt: ""),
-      "isVerified": false,
-      "contactName": safeGet(key: "contactName", map: orgData, alt: ""),
-      "contactEmail": safeGet(key: "contactEmail", map: orgData, alt: ""),
-      "email": safeGet(key: "email", map: orgData, alt: ""),
-      "deliveryInstructions":
-          safeGet(key: "deliveryInstructions", map: orgData, alt: ""),
-      "createdAt": now,
-      "lastModified": now,
-      "requestSource": "website",
-      "quantityRequested": quantity,
-      "isDone": false,
-    };
-    return out;
-        }
-Map<String, dynamic> newResource(Map map, String id, String groupID) => {
-      "id": generateNewID(),
-      "designID": safeGet(key: "designID", map: map, alt: ""),
-      "claimID": safeGet(key: "claimID", map: map, alt: ""),
-      "orgID": safeGet(key: "orgID", map: map, alt: ""),
-      "requestID": safeGet(key: "requestID", map: map, alt: ""),
-      "userID": safeGet(key: "userID", map: map, alt: ""),
-      "groupID":groupID,
-      "userName":safeGet(key: "name", map: map, alt: ""),
-      "createdAt": map["createdAt"],
-      "lastModified": map["lastModified"],
-      "type": "Update",
-      "quantity": (map["quantity"] is String)
-          ? int.tryParse(map["quantity"]) ?? 0
-          : map["quantity"],
-      "name": safeGet(key: "name", map: map, alt: ""),
-      "url": safeGet(key: "url", map: map, alt: ""),
-      "description": safeGet(key: "description", map: map, alt: ""),
-      "isVerified": true,
-    };
-
-Map<String, dynamic> newClaim(Map map, String id, String now, String groupID) => {
-      "id": id,
-      "orgID": map["orgData"]["id"],
-      "requestID": map["requestData"]["id"],
-      "designID": map["requestData"]["designID"],
-      "userID": map["id"],
-      "groupID": groupID,
-      "userName":safeGet(key: "name", map: map, alt: ""),
-      "createdAt":now,
-      "lastModified": now,
-      "isVerified": false,
-      "quantity": (map["quantity"] is String)
-          ? int.tryParse(map["quantity"]) ?? 0
-          : map["quantity"],
-    };
-//  formModels: {
-//         "request":FormModel(tabs:[
-//           FormTabModel(formDataCallback:userInfo),
-//           FormTabModel(formDataCallback: orgInfo),
-//           FormTabModel(formDataCallback: requestInfo),
-//           FormTabModel(formDataCallback: deliveryInfo),
-//         ],
-//         onSubmit: (buffer){
-
-//         }),
-//         "update":FormModel(tabs: [
-//           FormTabModel(formDataCallback: updateInfo,),
-//         ],
-//         onSubmit: (buffer){
-
-//         }),
-//         "claim":FormModel(tabs: [
-//           FormTabModel(formDataCallback: claimInfo),
-//           FormTabModel(formDataCallback: claimVer),
-//           FormTabModel(formDataCallback: (buf)=>nextSteps(steps: [
-//           "Connection ",
-//           "Delivery ",
-//           "Update "
-//         ])),
-//       ],
-//         onSubmit: (buffer){
-
-//         }),
-        
-//       },
-
-          // var dataRepo = locator<DataRepo>();
-         // var groups = dataRepo.getItemsWhere("groups");
-        // var designData = dataRepo.getItemByID("designs",safeGet(key: "designID", map: data, alt: 0));
-       // RequestModel getRequestModel(String id){
-      //   RequestModel
-     // }
-    //  authState = AuthState();
-   // docsRepo = locator<DocsRepo>();
-  //formManager = FormManager()
- //FormManager formManager;
-// var formManager = locator<FormManager>();
-
-    //dataRepo.getItemByID("users", modelID)
-    //dataRepo.getItemByID("users", user["id"], addLinkMap: true);
-// Map buffer = {
-//   "id":generateNewID(),
-//   "orgData":orgData,
-//   "maxQuantity":quantityRequested-quantityClaimed,
-//   "designData":designData,
-//   "requestData":data,
-//   "groupsData":groups
-// };
-//   formManager.initClaim(orgData: orgData, requestData: data, maxQuantity: quantityRequested-quantityClaimed);
-// formManager.setForm("claim", );
-
-/*
-SIGN IN
-*/
-// Future<String> signIn(String email, String password,{GlobalKey<ScaffoldState> scaffoldKey}) async {
-//   String userID =await authState.signIn(email, password, scaffoldKey: scaffoldKey);
-//   loggedIn = true;
-//   currentUser = dataRepo.getItemByID("users", userID);
-//   setUserProfile(currentUser, isCurrentUser:true);
-//   return "";
-// }
-
-/*
-SIGN UP
-*/
-// initSignUp() {
-//   buffer = {
-//     "email": "",
-//     "name": "",
-//     "displayName": "",
-//     "isVerified": false,
-//   };
-// }
-
-// Future<String> signUp(
-//     {GlobalKey<ScaffoldState> scaffoldKey, @required String password}) async {
-//   buffer["displayName"] = buffer["name"];
-//   String uid = await authState.signUp(buffer["email"],
-//       scaffoldKey: scaffoldKey, password: password);
-//   if (uid != null) {
-//     buffer["id"] = uid;
-//     await dataRepo.createModel(modelData: buffer, collectionName: "users");
-//   }
-//   currentUser = buffer;
-//   loggedIn = true;
-//   setUserProfile(currentUser, isCurrentUser:true);
-//   return "";
-// }
-
-// List materialToSheet(Map<String, dynamic> map, DataRepo dataRepo)=>//async{ // await  dataRepo.addRowToSheet(collectionName:"orgs", vals:
-//             [
-//             safeGet(key: "contactName", map: map, alt: ""),
-//             safeGet(key: "contactEmail", map: map, alt: ""),
-//             safeGet(key: "isVerified", map: map, alt: false)?"true":"false",
-//             safeGet(key: "quantity", map: map, alt: 0),
-//             safeGet(key: "info", map: map, alt: "-"),
-//             safeGet(key: "createdAt", map: map, alt: "-"),
-//             ];
-
-// List orgToSheet(Map<String, dynamic> map, DataRepo dataRepo)=>//async{ // await  dataRepo.addRowToSheet(collectionName:"orgs", vals:
-//             [
-//             safeGet(key: "id", map: map, alt: ""),
-//             safeGet(key: "name", map: map, alt: ""),
-//             safeGet(key: "isVerified", map: map, alt: false)?"true":"false",
-//             safeGet(key: "requests", map: map, alt: []).length,
-//             safeGet(key: "type", map: map, alt: "-"),
-//             safeGet(key: "contactEmail", map:map, alt: "-"),
-//             safeGet(key: "contactName", map:map, alt: "-"),
-//             safeGet(key: "address", map:map, alt: "-"),
-//             safeGet(key: "deliveryInstructions", map:map, alt: "-"),
-//             safeGet(key: "createdAt", map: map, alt: "-"),
-//             ];
-
-// List requestToSheet(Map<String, dynamic> map, DataRepo dataRepo){
-//  return     [
-//             safeGet(key: "id", map: map, alt: "-"),
-//             safeGet(key: "isVerified", map: map, alt: false)?"true":"false",
-//             safeGet(key: "contactName", map: map, alt: "-"),
-//             safeGet(key: "name", map: map, alt: "-"),
-//             safeGet(key: "name", map: dataRepo.getItemByID("designs", map["designID"]), alt: "-"),
-//             safeGet(key: "quantity", map: map, alt:0),
-//             safeGet(key: "requestSource", map: map, alt: "-"),
-//             safeGet(key: "isDone", map: map, alt: false)?"true":"false",
-//             safeGet(key: "createdAt", map: map, alt: "-"),
-//             ];}
-
-// List resourceToSheet(Map<String, dynamic> map, DataRepo dataRepo)=>//async{//  await  dataRepo.addRowToSheet(collectionName:"resources", vals:
-//           [
-//             safeGet(key: "id", map: map, alt: ""),
-//             safeGet(key: "url", map: map, alt: ""),
-//             safeGet(key: "isVerified", map: map, alt: false)?"true":"false",
-//             safeGet(key: "name", map: map, alt: ""),
-//             safeGet(key: "name", map:dataRepo.getItemByID("orgs", safeGet(key: "orgID", map: map, alt: "")), alt: ""),
-//             safeGet(key: "name", map:  dataRepo.getItemByID("designs",safeGet(key: "designID", map: map, alt: "")), alt: ""),
-//             safeGet(key: "quantity", map: map, alt: 0),
-//             safeGet(key: "displayName", map: dataRepo.getItemByID("users",safeGet(key: "userID", map: map, alt: "")), alt: ""),
-//             safeGet(key: "createdAt", map: map, alt: ""),
-//           ];
-// List claimToSheet(Map<String, dynamic> map, DataRepo dataRepo)=>//async{ // await  dataRepo.addRowToSheet(collectionName:"requests", vals:
-//             [
-//             safeGet(key: "id", map: map, alt: ""),
-//             safeGet(key: "isVerified", map: map, alt: false)?"true":"false",
-//             safeGet(key: "name", map:dataRepo.getItemByID("orgs", safeGet(key: "orgID", map: map, alt: "")), alt: ""),
-//             safeGet(key: "name", map: dataRepo.getItemByID("designs", map["designID"]), alt: ""),
-//             safeGet(key: "displayName", map: dataRepo.getItemByID("users",safeGet(key: "userID", map: map, alt: "")), alt: ""),
-//             safeGet(key: "quantity", map: map, alt: 0),
-//             safeGet(key: "isDone", map: map, alt: false)?"true":"false",
-//             safeGet(key: "createdAt", map: map, alt: ""),
-//           ];

@@ -1,8 +1,7 @@
 
 import 'package:delaware_makes/state/service_locator.dart';
 import 'package:delaware_makes/state/state.dart';
-import 'package:domore/state/custom_model.dart';
-import 'package:domore/state/new_data_repo.dart';
+import 'package:domore/domore.dart';
 
 Map icons={
     "fa900ce5-aae8-4a69-92c3-3605f1c9b494":"https://images.squarespace-cdn.com/content/v1/597f55aa20099e0ef5ad6f39/1588881166426-SIZUR1NVBLYOBD53YB3X/ke17ZwdGBToddI8pDm48kKAwwdAfKsTlKsCcElEApLR7gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1UY_1Meb8-Dj4GHImj6dpC0aR7O2ZKZedZTAz84fFYaQfMW9u6oXQZQicHHG1WEE6fg/Ear+Saver+Hydra+Single+%282000%29.png",
@@ -11,33 +10,38 @@ Map icons={
 
 
 class RequestModelCount{
-    final CustomModel request;
+    final String requestID;
     int quantityRequested;
     int quantityClaimed;
     int quantityDelivered;
     bool isDone =false;
     bool isClaimed= false;
+    bool isVerified = false;
     RequestModelCount(
-      this.request,
+      this.requestID,
     );
     int remaining()=>quantityRequested-quantityDelivered;
-    init(){
+    init(DataRepo dataRepo){
       quantityRequested = 0;
       quantityClaimed=0;
       quantityDelivered=0;
-      var dataRepo= locator<DataRepo>();
+      CustomModel _request = dataRepo.getItemByID("requests", requestID);
 
-      request.addMultipleLinkedVals(
+
+      _request.addAssociatedIDs(otherCollectionName: "resources", getOneToMany: dataRepo.getOneToMany);
+     // print("dRD");
+   //   print(request.oneToOneData[ "resources"].length);
+      _request.addMultipleLinkedVals(
         linkedData: {
           "designID":{"id":"", "name":"" },
           "orgID":{"id":"", "name":"",  "address":"" },
         },
         getItemByID: dataRepo.getItemByID
         );
-
-      quantityRequested=request.getVal("quantity", alt:0);
-
-       request.getAssociatedVals(
+//print(request.getVal("name",collection:"orgs"));
+      quantityRequested=_request.getVal("quantity", alt:0);
+       isVerified = _request.getVal("isVerified", alt:false);
+       _request.getAssociatedVals(
          otherCollectionName: "claims",
          fieldName: "quantity", 
          getOneToMany: dataRepo.getOneToMany,
@@ -48,7 +52,7 @@ class RequestModelCount{
          });
         // print(quantityClaimed);
 
-         request.oneToManyData["claims"].forEach((claimID){
+         _request.oneToManyData["claims"].forEach((claimID){
            dataRepo.getItemByID("claims", claimID).getAssociatedVals(
              otherCollectionName: "resources", 
              fieldName: "quantity", 
@@ -59,34 +63,18 @@ class RequestModelCount{
               quantityDelivered+=rquant;
              });
          });
-        // print(quantityDelivered);
-
       isDone = quantityDelivered>=quantityRequested;
       isClaimed = quantityClaimed>=quantityRequested;
     
     }
-
-  CustomModel getClaimModel(String id){
-    var dataRepo= locator<DataRepo>();
-    CustomModel claim= dataRepo.getItemByID("claims", id);
-    if(claim==null)return null;
-    claim.addMultipleLinkedVals(
-      linkedData: {
-       "userID": {"id":"", "name":"" }, 
-       "groupID":{"id":"", "name":"", "verificationCode":"" }, 
-      },
-      getItemByID: dataRepo.getItemByID
-    );
-    
-    claim.addAssociatedIDs(
-      otherCollectionName: "resources",
-      getOneToMany: dataRepo.getOneToMany
-    );
-
-    return claim;
-  }
- 
 }
+
+     // var dataRepo= locator<DataRepo>();
+      //print(_request.oneToOneData);
+
+         //print(quantityDelivered);
+
+
 
 
       // var dataRepo= locator<DataRepo>();

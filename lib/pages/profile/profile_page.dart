@@ -5,7 +5,8 @@ import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/state/app_state.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/utility.dart';
-import 'package:domore/state/custom_model.dart';
+import 'package:domore/database/custom_model.dart';
+import 'package:domore/domore.dart';
 import 'package:flutter/material.dart';
 //, this.profileId
 class ProfilePage extends StatelessWidget {
@@ -37,11 +38,7 @@ class ProfilePage extends StatelessWidget {
                   .image,
             ),
             SizedBox(height: 20,),
-            Text(
-              user.getVal("name"),
-            
-              textScaleFactor: 4,
-            ),
+            Text( user.getVal("name"),textScaleFactor: 4,),
             SizedBox(height: 20,),
             SizedBox( height: 40,),
           ])

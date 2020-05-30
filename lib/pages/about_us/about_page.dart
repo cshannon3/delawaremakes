@@ -1,8 +1,9 @@
 
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
-import 'package:delaware_makes/theme.dart';
 import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:domore/domore.dart';
+
 import 'dart:math' as math;
 class TextModel {}
 
@@ -132,7 +133,7 @@ class AboutUsPage extends StatelessWidget {
                         ))
                     .toList(),
               ),
-              SizedBox(height: 20.0),
+              SizedBox(height: 100.0),
               // headTitle("Our Partners"),
             ],
           );

@@ -37,24 +37,14 @@ final ThemeData themeData= ThemeData(
       headline1: TextStyle(fontSize: 60.0,color: Colors.black),
       headline2: TextStyle( color:Colors.white, fontSize:30.0),
       headline3: TextStyle( color:Colors.white, fontSize:25.0),
-      
       headline5: TextStyle( color:Colors.white, fontSize: 20.0,fontWeight: FontWeight.bold),
       headline6:TextStyle( color:Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold),
       subtitle1: TextStyle( color:Colors.white, fontSize:20.0),
       subtitle2: TextStyle( color:Colors.white, fontSize:16.0),
       bodyText1: TextStyle(fontSize: 12.0,),
-      
       bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-      
-
     ),
   );
-
-// final fsVLg= TextStyle( fontSize: 45.0);
-// final fsLg= TextStyle( fontSize: 25.0);
-// final fsMed= TextStyle( fontSize: 20.0);
-// final fsSm= TextStyle( fontSize: 16.0);
-// final fsXSm= TextStyle( fontSize: 12.0);
 
 
 final projTitle=TextStyle(
@@ -84,4 +74,9 @@ final BoxDecoration mainBackground = BoxDecoration(
                 Color.fromRGBO(36, 11, 54, 1.0)
               ]),
         );
-  
+  // final fsVLg= TextStyle( fontSize: 45.0);
+// final fsLg= TextStyle( fontSize: 25.0);
+// final fsMed= TextStyle( fontSize: 20.0);
+// final fsSm= TextStyle( fontSize: 16.0);
+// final fsXSm= TextStyle( fontSize: 12.0);
+
