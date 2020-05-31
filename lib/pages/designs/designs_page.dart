@@ -42,7 +42,9 @@ class DesignsPage extends StatelessWidget {
          ],),
          SizedBox(height: 30.0,),
          Expanded(child: 
-         GridView.count(crossAxisCount: cols,
+         GridView.count(
+           cacheExtent: 9999999,
+           crossAxisCount: cols,
          children: designVersions.map((designModel) => 
           Padding(
             padding: const EdgeInsets.all(8.0),

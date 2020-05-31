@@ -1,12 +1,14 @@
-import 'package:delaware_makes/counters/designCounts.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class CountsWidget extends StatelessWidget {
   final bool isMobile;
+  final String faceShieldCount;
+  final String earsaverCount;
 
 
-  CountsWidget({Key key, this.isMobile}) ;
+  CountsWidget({Key key, this.isMobile,@required this.faceShieldCount, @required this.earsaverCount}) ;
   @override
 
   Widget build(BuildContext context) {
@@ -14,15 +16,13 @@ class CountsWidget extends StatelessWidget {
     TextStyle countSubTextStyle= Theme.of(context).textTheme.subtitle1;
      Color lightColor= Theme.of(context).primaryColorLight;
 
-    var facesh =  DesignModelCount(designID: "5f2009e0-55a8-4d4b-aa6a-a9becf5c9392", designName: "Face Shields");
-    var earsaver =   DesignModelCount(designID: "fa900ce5-aae8-4a69-92c3-3605f1c9b494", designName: "Ear Savers");
-
-      facesh.init();
-      earsaver.init();
+ 
       int btm = 300;
       //String hsm = "35,000";
-      String fs = facesh.quantityDelivered.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
-      String es = earsaver.quantityDelivered.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+      String fs = faceShieldCount;
+     // faceShield.quantityDelivered.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+      String es = earsaverCount;
+    //  earsaver.quantityDelivered.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
     return Container(
       color: lightColor,  //Colors.grey,
       child: Column(
@@ -65,3 +65,8 @@ Widget countWidget({String quantity, String name, TextStyle s, TextStyle m}) => 
      //TextStyle( color:Colors.white))
         //TextStyle( color:Colors.white)),
  // TextStyle( color:Colors.white, fontSize:30.0)
+   // var facesh =  DesignModelCount(designID: "5f2009e0-55a8-4d4b-aa6a-a9becf5c9392", designName: "Face Shields");
+    // var earsaver =   DesignModelCount(designID: "fa900ce5-aae8-4a69-92c3-3605f1c9b494", designName: "Ear Savers");
+
+    //   facesh.init();
+    //   earsaver.init();

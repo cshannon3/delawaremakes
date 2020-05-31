@@ -26,7 +26,7 @@ class Routes {
   static String locations = "/map";
   static String resources = "/resources";
   static String datastruct = "/datastruct";
-  //static String resources = "/resources";
+  static String kanban = "/kanban";
 
 
   static dynamic route(){
@@ -48,6 +48,7 @@ class Routes {
     router.define(aboutUs, handler: aboutUsHandler);
     router.define(resources, handler: resourcesHandler);
     router.define(locations, handler: locRouterHandler);
+    router.define(kanban, handler: kanbanHandler);
   }
 }
 var locRouterHandler = Handler(
@@ -77,6 +78,10 @@ var aboutUsHandler = Handler(
   return RootPage(screen:AboutUsPage(),currentRoute:"/aboutus");
 });
 
+var kanbanHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return RootPage(screen:KanBan(),currentRoute:"/kanban");
+});
 
 
 var usersHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {

@@ -26,14 +26,14 @@ class _RootPageState extends State<RootPage> {
     }
 
     appState.addListener(() {
-      if(!appState.isFormActive && isFormActive){
-         isFormActive = appState.isFormActive;
-        tappedMenuButton(context, "/map");
+     // if(!appState.isFormActive && isFormActive){
+      //   isFormActive = appState.isFormActive;
+       // tappedMenuButton(context, "/map");
        
-      }else{
+     // }else{
       setState(() { isFormActive = appState.isFormActive;
       });
-      }
+    //  }
     });
     super.initState();
   }

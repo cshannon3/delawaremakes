@@ -1,12 +1,9 @@
-import 'package:delaware_makes/counters/designCounts.dart';
-import 'package:delaware_makes/counters/org_model.dart';
-import 'package:delaware_makes/counters/request_model.dart';
-import 'package:delaware_makes/pages/locations/map_widget.dart';
+
+import 'package:delaware_makes/counters/counters.dart';
+import 'package:delaware_makes/pages/locations/components/map_widget.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/utility.dart';
-import 'package:domore/domore.dart';
-
 import 'package:flutter/material.dart';
 import 'package:universal_html/html.dart';
 

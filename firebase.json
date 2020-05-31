@@ -11,6 +11,10 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "rewrites": [ {
+      "source": "/sendMailFB",
+      "function": "sendMailFB"
+    } ]
   }
 }

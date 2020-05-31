@@ -1,12 +1,12 @@
 
-import 'package:delaware_makes/pages/home/home_constants.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
+import 'package:delaware_makes/theme.dart';
 import 'package:delaware_makes/utils/utils.dart';
 import 'package:domore/domore.dart';
 import 'package:flutter/material.dart';
 
-
 class RequestSection extends StatelessWidget {
+  
   final bool isMobile;
   final List<String> orgNames;
   final Widget requestButton;
@@ -41,14 +41,6 @@ class RequestSection extends StatelessWidget {
                 child: Container(
                   width: 300.0,
                   child: requestButton
-                  
-                  //  CallToActionButton(
-                  //   name: "Request Donation",
-                  //   onPressed: () {
-                  //     var appState =  locator<AppState>();
-                  //     appState.initRequest();
-                  //   },
-                  // ),
                 ),
               ),
                SizedBox(
@@ -310,3 +302,13 @@ class RequestSection extends StatelessWidget {
     //   String orgName = safeGet(map: value, key: "name", alt: "");
     //   if (orgName != "") orgNames.add(orgName);
     // });
+
+
+                  
+                  //  CallToActionButton(
+                  //   name: "Request Donation",
+                  //   onPressed: () {
+                  //     var appState =  locator<AppState>();
+                  //     appState.initRequest();
+                  //   },
+                  // ),

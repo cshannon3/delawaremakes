@@ -1,5 +1,6 @@
 
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
+import 'package:delaware_makes/utils/copy_to_clipboard.dart';
 import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:domore/domore.dart';
@@ -113,9 +114,15 @@ class AboutUsPage extends StatelessWidget {
               SizedBox(height: 50.0),
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: (w - 800) / 2),
-                  child: Text(
-                    abt,
-                    style: fsMed,
+                  child: 
+                  InkWell(
+                    onTap: (){
+                      copyToClipboard(abt);
+                    },
+                    child: Text(
+                      abt,
+                      style: fsMed,
+                    ),
                   )
                   //toColumnText( safeGet(key:"AboutUs", map:docsRepo.doc.sections, alt:"")),
                   ),

@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:delaware_makes/counters/counters.dart';
-import 'package:delaware_makes/counters/request_model.dart';
 import 'package:delaware_makes/integrations/slack/slack_src.dart';
+import 'package:delaware_makes/state/db_interface.dart';
+import 'package:delaware_makes/state/form_tabs.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/constant.dart';
 import 'package:delaware_makes/utils/secrets.dart';
@@ -64,10 +65,9 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
- initLogin(){
-   isLoginActive=true;
-   notifyListeners();
- }
+
+ initLogin(){isLoginActive=true; notifyListeners();}
+
   onSignIn(FirebaseUser firebaseUser, bool isSignUp){
       if(isSignUp){}
       else currentUser = dataRepo.getItemByID("users", firebaseUser.uid);
@@ -78,6 +78,7 @@ class AppState extends ChangeNotifier {
   
     notifyListeners();
   }
+
    onFormClose(){
       isLoginActive=false;
       notifyListeners();
@@ -107,40 +108,34 @@ class AppState extends ChangeNotifier {
 
 
 
-  initDesigns(){
-      designs = [
-      DesignModelCount(
-          designID: "5f2009e0-55a8-4d4b-aa6a-a9becf5c9392",
-          designName: "Face Shields"),
-      DesignModelCount(
-          designID: "fa900ce5-aae8-4a69-92c3-3605f1c9b494",
-          designName: "Ear Savers"),
-    ];
-    designs.forEach((element) {
-      element.init();
-    });
+List<DesignModelCount> initDesigns(){
+    designs = [];
+    DBInterface i = DBInterface(dataRepo);
+    designs.add(i.getDesignCount( "5f2009e0-55a8-4d4b-aa6a-a9becf5c9392"));
+    designs.add(i.getDesignCount("fa900ce5-aae8-4a69-92c3-3605f1c9b494"));  
+    return designs;
   }
 
 initRequests(){
+      DBInterface i = DBInterface(dataRepo);
       orgModels = {};
       requests = [];
       dataRepo.getModels("requests").forEach((requestID, model) {
-      //  model.addAssociatedIDs(otherCollectionName: null, getOneToMany: null)
-        RequestModelCount r = RequestModelCount(requestID);
-        r.init(dataRepo);
-        requests.add(r);
-        if (model.data.containsKey("orgID")) {
-          String orgID = model.data["orgID"];
-          if (!orgModels.containsKey(orgID)) {
-            CustomModel orgData = dataRepo.getItemByID("orgs", orgID);
-            if (orgData != null) orgModels[orgID] = OrgModelCount(orgData);
-          }
-          try {
-            orgModels[orgID].addRequestQuantities(r);
-          } catch (e) {}
-        }
+        requests.add(i.getRequestModelCount(requestID));
+        _addRequestToOrgModel(model.getVal("orgID"), requests.last);
       });
       requests.sort((a, b) => b.remaining().compareTo(a.remaining()));
+}
+
+_addRequestToOrgModel(String orgID, RequestModelCount newModel){
+        if (orgID==null || orgID == "") return;
+
+        if (!orgModels.containsKey(orgID)) {
+            CustomModel orgData = dataRepo.getItemByID("orgs", orgID);
+            if (orgData != null) orgModels[orgID] = OrgModelCount(orgData); }
+          try {
+            orgModels[orgID].addRequestQuantities(newModel);
+          } catch (e) {}
 }
 
 
@@ -148,8 +143,6 @@ initRequests(){
 
 
 
-
-  
 
   Future<bool> submitForm(bool isDone) async {
     print("SUBMITFORM");
@@ -185,13 +178,12 @@ initRequests(){
 
 Request
 
-
  */
 
 
   initRequest() {
     isFormActive=true;
-     notifyListeners();
+     //notifyListeners();
     Map<String, dynamic> buffer={
       "designs":[
         dataRepo.getItemByID("designs", "fa900ce5-aae8-4a69-92c3-3605f1c9b494"),
@@ -229,9 +221,22 @@ Request
         "createdAt": now,       "lastModified": now,
         "id":generateNewID(),   "isVerified":false
       });
-
       // String newOrgID = generateNewID();
       String addr = reqOrg["address"]; // safeGet(key: "address", map: currentFormModel.buffer, alt: null);
+      AuthState authState = AuthState(FirebaseAuth.instance);
+      String code = reqOrg["id"].substring(0,5);
+      String userID = await authState.signUp(reqOrg["contactEmail"], password: code);
+      await dataRepo.addModel(
+        data: {
+          "id":userID,
+          "name":reqOrg["contactName"],
+          "email":reqOrg["contactEmail"],
+          "isVerified":true,
+
+        },
+        collectionName: "users",
+        saveToFirebase: true
+      );
 
       if(addr!=null){
         addr = addr.replaceAll(" ", "+").replaceAll("/", "").replaceAll("#", "");
@@ -266,8 +271,8 @@ Request
         };
         CustomModel d= dataRepo.getItemByID("designs", designID);
         String cd = d.getVal("name");
-        print('New request from ${reqOrg["contactName"]}(${reqOrg["contactName"]}) at ${reqOrg["name"]}(${reqOrg["address"]}) for ${reqData["quantity"]} ${cd}s');
-          Message message = new Message('New request from ${reqOrg["contactName"]}(${reqOrg["contactName"]}) at ${reqOrg["name"]}(${reqOrg["address"]}) for $reqData ${cd}s',username:'bar-user');      
+        print('New request from ${reqOrg["contactName"]}(${reqOrg["contactEmail"]}) at ${reqOrg["name"]}(${reqOrg["address"]}) for ${reqData["quantity"]} ${cd}s');
+          Message message = new Message('New request from ${reqOrg["contactName"]}(${reqOrg["contactName"]}) at ${reqOrg["name"]}(${reqOrg["address"]}) for ${reqData["quantity"]} ${cd}s',username:'bar-user');      
           slack.send(message);
         
           reqsData.add(reqData);
@@ -280,22 +285,22 @@ Request
         saveToFirebase: true
       );
       }
-    
-    //  String contactName = reqOrg["contactName"];
-    //   String contactEmail = reqOrg["contactEmail"];
-    //   String orgName = orgModel.getVal("name");
-    //   String code = orgModel.id.substring(0,5);
+      
 
-    //
-   //  print(url);
-      //   var response = await  http.post(url, body: {});
+      // String contactName = reqOrg["contactName"];
+      // String contactEmail = reqOrg["contactEmail"];
+      // String orgName = orgModel.getVal("name");
+      // String code = orgModel.id.substring(0,5);
+      // var url = 'https://us-central1-million-more-makers.cloudfunctions.net/sendMailFB?dest=$contactEmail&contactName=$contactName&orgName=$orgName&code=$code';
+    
+      //  print(url);
+      // var response = await  http.post(url, body: {});
       // print('Response status: ${response.statusCode}');
       // print('Response body: ${response.body}');
+  
       await Future.delayed(Duration(milliseconds: 5));
       return true;
   }
-
-
 
 
 /*
@@ -303,9 +308,7 @@ Request
 Claim
 
 */
-
-
-    initClaim(String requestID, int max) {
+initClaim(String requestID, int max) {
     print("INIT CLAIM");
     CustomModel request = dataRepo.getItemByID("requests", requestID);
     // request.addAssociatedIDs(otherCollectionName: "resources", getOneToMany: dataRepo.getOneToMany);
@@ -348,7 +351,7 @@ Claim
       List<CustomModel> groups = dataRepo.getModels("groups").values.toList();
       int i=0;
       String code = currentFormModel.buffer["verificationCode"];
-       print(dataRepo.collections["claims"].models.length);
+      // print(dataRepo.getModels("claims").length);
       CustomModel group;
        while (i <groups.length && group==null){
         String c=groups[i].getVal("verificationCode");
@@ -380,10 +383,9 @@ Claim
         saveToFirebase: true
         );
         dataRepo.collections["claims"].models[m.id]=m;
-        print(dataRepo.collections["claims"].models.length);
+        //print(dataRepo.collections["claims"].models.length);
       return true;
-     // createModel(modelData: claim, collectionName: "claims");
-      //dataRepo.addRowToSheet(collectionName: "claims", vals: claimToSheet(claim, dataRepo));
+     
       }
    
   }
@@ -399,9 +401,7 @@ initUpdate(CustomModel request, CustomModel claimModel) {
      print("INIT Update");
     //var groups = dataRepo.getItemsWhere("groups");
     isFormActive=true;
-   // dataRepo = locator<DataRepo>();
-   // var groups = dataRepo.getItemsWhere("groups");
-   // var designData = dataRepo.getItemByID("designs", claimModel.getVal("designID"));
+   
     String designID =request.getVal("id", collection:"designs");
     Map<String, dynamic> buffer={
       "orgID": request.getVal("id", collection:"orgs"),
@@ -428,13 +428,11 @@ initUpdate(CustomModel request, CustomModel claimModel) {
       String now = DateTime.now().toUtc().toString();
      List<CustomModel> groups = dataRepo.getModels("groups").values.toList();
       int i=0;
-      String code = currentFormModel.buffer["verificationCode"];
-   //   print(code);
+      String code = currentFormModel.buffer["verificationCode"];//   print(code);
       CustomModel group;
       if(code ==null)return false;
       while (i <groups.length && group==null){
-        String c=groups[i].getVal("verificationCode");
-      //  print(c);
+        String c=groups[i].getVal("verificationCode"); //  print(c);
         if(code==c){
           group =  groups[i];
         } i++;
@@ -442,7 +440,7 @@ initUpdate(CustomModel request, CustomModel claimModel) {
       if(group==null){ print("not found");  }
       else{ print("found");
      // Map<String, dynamic> resourceData = newResource(map, newResourceID, group["id"]);
-          Map<String, dynamic> reqOrg = currentFormModel.toMap(
+      Map<String, dynamic> reqOrg = currentFormModel.toMap(
         checkItems:{
         "designID": "designID",   "claimID":"claimID",  "orgID":"orgID",
         "requestID":"requestID",  "userID": "userID",
@@ -451,269 +449,31 @@ initUpdate(CustomModel request, CustomModel claimModel) {
         "type": "Update",   "createdAt": now,
         "lastModified": now, "id":generateNewID(),
         "isVerified":true });
-    //s  reqOrg["quantity"]=int.tryParse(reqOrg["quantity"])??0;
-     
+
       CustomModel m=await dataRepo.addModel(
         data: reqOrg, 
         collectionName:"resources", 
         saveToFirebase: true
         );
+       
         dataRepo.collections["resources"].models[m.id]=m;
-     //  dataRepo.addRowToSheet(collectionName: "resources",vals: resourceToSheet(resourceData, dataRepo));
+       
       }
-     // dataRepo.collections["resources"].models[m.id]
+
       return true;
   }
 
 }
 
+ //dataRepo.getItemByID("claims", reqOrg["claimID"]).addAssociatedIDs(otherCollectionName: "resources", getOneToMany: dataRepo.getOneToMany);
+        // dataRepo.getItemByID("requests", reqOrg["claimID"]).addAssociatedIDs(otherCollectionName: "resources", getOneToMany: dataRepo.getOneToMany);
+     //  dataRepo.addRowToSheet(collectionName: "resources",vals: resourceToSheet(resourceData, dataRepo));
+     // dataRepo.collections["resources"].models[m.id]
+ //m.addAssociatedIDs(otherCollectionName: null, getOneToMany: null)
 
+// dataRepo = locator<DataRepo>();
+   // var groups = dataRepo.getItemsWhere("groups");
+   // var designData = dataRepo.getItemByID("designs", claimModel.getVal("designID"));
 
-
-const List org = [
-  ""
-  "Hospital",
-  "Senior Living",
-  "Home Care",
-  "Government",
-  "Social Services",
-  "Community Center/Housing",
-  "Rehab",
-  "Physicians/Doctor's Office",
-  "Other"
-];
-
-Map<String, dynamic> userInfo(Map buffer)=>{
-    "id":"userInfo",
-    "isValidated":false,
-    "formKey": "",
-    "icon":Icons.person_outline,
-    "h":500.0,
-    "tooltip":"User Info",
-     "buffer":{
-        "name":"",
-        "email":"",
-    },
-    "items":[
-            {"type":"title", "text":"Contact Info", "b":20},
-            {"type":"description", "text":"Name:"},
-            {"type":"formEntryField", "text":"Name","b":20,"key":"name", "validator":"empty"},
-            {"type":"description", "text":"Email:"},
-            {"type":"formEntryField", "text":"Email", "b":20,"key":"email","validator":"email"},
-            {"type":"expanded", },
-            {"type":"submitButton", "text":"Next"},
-    ]
-    };
-
-Map<String, dynamic> orgInfo(Map buffer)=>{
-      "id":"orgInfo",
-      "isValidated":false,
-      "formKey":  "",
-      "icon":Icons.pin_drop,
-      "h":550.0,
-      "tooltip":"Organization Info",
-      "buffer":{
-        "orgName":"",
-        "address":"",
-        "orgType":"Hospital"
-      },
-      "items":[
-            {"type":"title", "text":"Organization Info"},
-            {"type":"description", "text":"Organization Name:"},
-            {"type":"formEntryField", "text":"Organization Name","b":20,"key":"orgName","validator":"empty"},
-            {"type":"description", "text":"Organization Address:"},
-            {"type":"formEntryField", "text":"Organization Address","b":20,"key":"address","validator":"empty"},
-            {"type":"description", "text":"Organization Type:"},
-            {"type":"dropdown", "text":"Select From List", "b":20, "items":org, "key":"orgType", },
-            {"type":"expanded", },
-            {"type":"submitButton", "text":"Next"},
-    ]
-   };
-
-Map<String, dynamic> requestInfo(Map buffer){
-  Map requests={};
-  List items = [{"type":"title", "text":"Request Info"}];
-  buffer["designs"].forEach((designModel) {
-    CustomModel des= designModel;
-    items.add({
-      "type":"imageInputForm", 
-      "text":des.getVal("name", alt:""),// safeGet(key: "name", map: des.designData, alt: ""),
-      "url":des.getVal("url", alt:""), //  safeGet(key: "url", map: designData, alt: ""),
-      "b":20,
-      "key":des.id// designData["id"]
-      });
-      requests[des.id]="0";
-  });
-  items.add({"type":"submitButton", "text":"Next",});
-  return {
-      "id":"reqInfo",       "isValidated":false,     "formKey": "",       "icon":Icons.local_mall,
-      "tooltip":"Requests", "h":500.0,               "items":items,
-      "buffer":{"requests":requests}
-   };
-}
-Map<String, dynamic> deliveryInfo(Map buffer)=>{
-      "id":"deliveryInfo",
-      "isValidated":false,
-      "icon":Icons.verified_user,
-      "formKey": "",
-      "h":500.0,
-      "tooltip":"Delivery Instructions",
-      "buffer":{
-        "deliveryInstructions":"",
-      },
-      "items":[
-          {"type":"title", "text":"Delivery Info"},
-          {"type":"description", "text":"Delivery Instructions:", "tooltip":"Please enter any information the groups would need to deliver items to you"},
-          {"type":"formEntryField", "text":"Delivery Instructions","key": "deliveryInstructions","maxLines":6, "tooltip": "Please enter any information the groups would need to deliver items to you"},
-           {"type":"expanded", },
-          {"type":"submitButton", "text":"Submit","submit":true},
-        ]
-   };
-
-Map<String, dynamic> loginInfo(Map buffer)=>{
-    "isValidated":false,
-    "icon":Icons.person_outline,
-    "tooltip":"User Info",
-         "buffer":{
-        "verification":"",
-        "quantity":"",
-    },
-    "items":[
-            {"type":"title", "text":"Sign In"},
-            {"type":"description", "text":"Email:"},
-            {"type":"formEntryField", "text":"Email", "key":"email",},
-            {"type":"description", "text":"Password:"},
-            {"type":"formEntryField", "text":"Password","key":"password"},
-            {"type":"submitButton", "text":"Submit"},
-        ]
-    };
-
-Map<String, dynamic> claimInfo(Map buffer){
-  //print(buffer);
- return  {
-    "id":"claimInfo",
-    "icon":Icons.info_outline,
-    "h":600.0,
-    "tooltip":"Claim Info",
-     "buffer":{
-    },
-    "items":[
-            {"type":"title", "text":"Claim Overview", "b":20},
-            {"type":"description", "text":"Organization: ${buffer["orgName"]}"},
-            {"type":"description", "text":"Design: ${buffer["designName"]}"},
-            {"type":"image", "url":"${buffer["url"]}"},
-            {"type":"description", "text":"Quantity Remaining:${buffer["max"]} "},
-            {"type":"expanded", },
-            {"type":"submitButton", "b":20, "text":"Next"},
-    ]
-    };
-}
-Map<String, dynamic> claimVer(Map buffer)=>{
-    "id":"claimVer",
-    "icon":Icons.person_outline,
-    "h":550.0,
-    "tooltip":"Claim Info",
-     "buffer":{
-        "name":"",
-        "verification":"",
-        "quantity":"",
-    },
-    "items":[
-            {"type":"title", "text":"Claim Information", "b":20},
-            {"type":"description", "text":"Name:"},
-            {"type":"formEntryField", "text":"Name","b":20,"key":"name"},
-            {"type":"description", "text":"Quantity Claiming:"},
-            {"type":"formEntryField", "text":"quantity", "b":20,"key":"quantity"},
-            {"type":"description", "text":"Verification Code:", "tooltip":" If you don’t have a verification code, request one by emailing delawaremakes@gmail.com"},
-            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verificationCode", "validator":"verification"},
-            //{"type":"expanded", },
-            {"type":"submitButton", "b":20, "text":"Submit", "submit":true},
-    ]
-    };
-Map<String, dynamic> claimReview(Map buffer)=>{
-    "id":"claimReview",
-    "icon":Icons.person_outline,
-    "h":550.0,
-    "tooltip":"Claim Info",
-     "buffer":{
-    },
-    "items":[
-            {"type":"title", "text":"Claim Review", "b":20},
-            {"type":"description", "text":"Name:"},
-            {"type":"formEntryField", "text":"Name","b":20,"key":"name"},
-            {"type":"description", "text":"Quantity Claiming:"},
-            {"type":"formEntryField", "text":"quantity", "b":20,"key":"quantity"},
-            {"type":"description", "text":"Verification Code:", "tooltip":" If you don’t have a verification code, request one by emailing delawaremakes@gmail.com"},
-            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verificationCode", "validator":"verification"},
-          //  {"type":"expanded", },
-            {"type":"submitButton", "b":20, "text":"Done", "submit":true},
-    ]
-    };
-Map<String, dynamic> updateInfo(Map buffer)=>{
-    "id":"updateInfo",
-    "isValidated":false,
-    "icon":Icons.person_outline,
-    "h":700.0,
-    "tooltip":"Update Info",
-     "buffer":{
-        "verification":"",
-        "name":"",
-        "url":"",
-        "isActive":false
-    },
-    "items":[
-            {"type":"title", "text":"Update", "b":20},
-            {"type":"description", "text":"Verification Code:", "tooltip":" If you don’t have a verification code, request one by emailing delawaremakes@gmail.com"},
-            {"type":"formEntryField", "text":"Verification Code","b":20,"key":"verificationCode","validator":"verification"},
-            {"type":"imageUpload", "text":"Upload", "b":20,"key":"url"},
-            {"type":"submitButton", "b":20, "text":"Submit", "submit":true},
-      ]
-    };
-Map<String, dynamic> materialRequestInfo()=>{
-    "id":"materialInfo",
-    "isValidated":false,
-    "icon":Icons.info_outline,
-    "h":500.0,
-    "tooltip":"Request Info",
-     "buffer":{
-        "info":"",
-        "quantity":"",
-    },
-    "items":[
-            {"type":"title", "text":"Claim Information", "b":20},
-            {"type":"description", "text":"Who are you making the shields for:", },
-            {"type":"formEntryField", "text":"End User Information","b":20,"key":"info", "maxlines":3},
-            {"type":"description", "text":"Approximately How Many are Needed?"},
-            {"type":"formEntryField", "text":"quantity", "b":20,"key":"quantity", "validator":"int"},
-            {"type":"submitButton", "text":"Next"},
-    ]
-    };
-
-Map<String, dynamic> claimDeliveryInfo(Map buffer)=>{
-    "id":"claimDelivery",
-    "h":550.0,
-    "tooltip":"Delivery",
-     "buffer":{
-    },
-    "items":[
-            {"type":"title", "text":"Claim Review", "b":20},
-            {"type":"submitButton", "b":20, "text":"Done"},
-    ]
-    };
-Map<String, dynamic> nextSteps({@required List<String> steps, @required String title}){
-   List items = [{"type":"title", "text":title}];
-   for (int i =0; i<steps.length; i++){
-     items.add({"type":"description", "text":"$i. ${steps[i]}"});
-   }
-    items.add({"type":"expanded", });
-   items.add({"type":"submitButton", "b":20.0,"text":"Next"});
-   return {
-    "type":"info",
-    "buffer":{
-       
-    },
-    "items":items
-    };
-}
-
-
+   // createModel(modelData: claim, collectionName: "claims");
+      //dataRepo.addRowToSheet(collectionName: "claims", vals: claimToSheet(claim, dataRepo));

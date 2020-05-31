@@ -47,6 +47,9 @@ List<String> ppl = [
   "Paul Morriss",
 ];
 
+
+
+
 class HomePageMain extends StatelessWidget {
   HomePageMain({
     Key key,
@@ -107,6 +110,8 @@ class HomePageMain extends StatelessWidget {
     bool mobile = isMobile(s.width);
     var appState = locator<AppState>();
     appState.setSize(s);
+    //appState.initDesigns();
+   // formatCountText(appState.designs[0].quantityDelivered);
 
     return Container(
         height: double.infinity,
@@ -116,6 +121,8 @@ class HomePageMain extends StatelessWidget {
           children: [
             IntroBlock(
               isMobile: mobile,
+              faceShieldCount: formatCountText(appState.designs[0].quantityDelivered)??"",
+              earsaverCount: formatCountText(appState.designs[1].quantityDelivered)??"",
             ),
             SizedBox(height: 50),
             Padding(

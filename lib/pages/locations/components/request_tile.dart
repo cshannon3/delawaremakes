@@ -1,8 +1,5 @@
 
-
-
-
-import 'package:delaware_makes/counters/request_model.dart';
+import 'package:delaware_makes/counters/counters.dart';
 import 'package:delaware_makes/pages/locations/components/claim_tile.dart';
 import 'package:delaware_makes/pages/locations/components/tickers.dart';
 import 'package:delaware_makes/state/state.dart';
@@ -101,12 +98,12 @@ class RequestTile extends StatelessWidget {
  // print("id");
     List<Widget> out =[];
     var claims= request.getVal("claims", associated: true);
-    print(claims.length);
+   // print(claims.length);
    request.getVal("claims", associated: true)?.
    forEach((claimID) {
           CustomModel claim= dataRepo.getItemByID("claims", claimID);
           if(claim!=null){
-          print("Get Claim");
+        //  print("Get Claim");
           claim.addAssociatedIDs(
             otherCollectionName: "resources",
             getOneToMany: dataRepo.getOneToMany
@@ -124,8 +121,8 @@ class RequestTile extends StatelessWidget {
                 claim:claim, 
                 isDone: claim.oneToManyData.containsKey("resources")&&claim.oneToManyData["resources"].length>0,
                 update: (){
-                var appState= locator<AppState>();
-                appState.initUpdate(request, claim);
+                    var appState= locator<AppState>();
+                    appState.initUpdate(request, claim);
               }
               ));
           }

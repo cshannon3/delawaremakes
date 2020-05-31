@@ -1,11 +1,12 @@
 
-import 'package:delaware_makes/pages/home/home_constants.dart';
 import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/state/state.dart';
+import 'package:delaware_makes/theme.dart';
 import 'package:domore/domore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 
 //  "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.15752-9/s2048x2048/97004143_237907727468307_3348191839210438656_n.jpg?_nc_cat=100&_nc_sid=b96e70&_nc_ohc=f5XU8kL6bVIAX9WZaBz&_nc_ht=scontent.fphl2-1.fna&_nc_tp=7&oh=d91b91d0aa5c5392ce61cd4ab6ee8bd1&oe=5EE9CFBA",
 class MakerSection extends StatelessWidget {

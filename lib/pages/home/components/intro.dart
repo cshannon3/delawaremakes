@@ -7,8 +7,12 @@ import 'package:flutter/material.dart';
 
 class IntroBlock extends StatelessWidget {
   final bool isMobile;
+ final String faceShieldCount;
+  final String earsaverCount;
 
-  const IntroBlock({Key key,@required this.isMobile}) : super(key: key);
+  const IntroBlock({Key key,@required this.isMobile,
+  @required this.faceShieldCount, 
+  @required this.earsaverCount}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     DocsRepo docsRepo =  locator<DocsRepo>();
@@ -46,7 +50,12 @@ class IntroBlock extends StatelessWidget {
                   ),
                 ),
                  SizedBox(height: 65.0,),
-                    CountsWidget(isMobile:isMobile)
+                    CountsWidget(
+                      isMobile:isMobile,
+                      faceShieldCount: faceShieldCount,
+                      earsaverCount: earsaverCount,
+                      
+                      )
               ],
         ),
       ),

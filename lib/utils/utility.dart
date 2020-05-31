@@ -10,7 +10,10 @@ import 'package:uuid/uuid.dart';
 String generateNewID()=>Uuid().v4();
 String generateIDTime()=>Uuid().v1();
 
+String formatCountText(int count)=>
+        count.toString().replaceAllMapped(new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
 
+        
 bool launch(String url) {
   return html.window.open(url, '') != null;
 }
