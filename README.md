@@ -3,7 +3,7 @@
 
 Project Overview(todo)
 
-## Getting Set up<br>
+## Getting Started<br>
 This site is written in Flutter, a cross-platform UI toolkit from google that uses the Dart programming language.
 
 
