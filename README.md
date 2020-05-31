@@ -3,9 +3,9 @@
 
 Project Overview(todo)
 **Relavent Resources**
-- [Lucid Chart]()
-- [Delaware Makes Slack]()
-- []
+- [Lucid Chart](https://app.lucidchart.com/invitations/accept/c0e0ac52-e95d-467d-83f0-0afded2a9faa)
+- [Delaware Makes Slack](https://join.slack.com/t/delawaremakes/shared_invite/zt-ee1k7e45-lseLrkf_Jt_heZG34eBMtA)
+- [Delaware COVID19 3D Printing](https://www.facebook.com/groups/1624749267680924)
 
 ## Getting Started<br>
 This site is written in Flutter, a cross-platform UI toolkit from google that uses the Dart programming language.
