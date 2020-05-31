@@ -2,6 +2,10 @@
 **A Platform To Connect Local PPE Manufacturing Efforts with Organizations In Need**
 
 Project Overview(todo)
+**Relavent Resources**
+- [Lucid Chart]()
+- [Delaware Makes Slack]()
+- []
 
 ## Getting Started<br>
 This site is written in Flutter, a cross-platform UI toolkit from google that uses the Dart programming language.
@@ -61,6 +65,7 @@ Todo
 
 
 ## Project Overview <br/>
+
 
 **Project File Structure**<br>
 - state/: Directory containing the majority of the logic of the site
