@@ -1,6 +1,9 @@
-# Delaware Makes - A Platform To Connect Local PPE Manufacturing Efforts with Organizations In Need
+# Delaware Makes <br>
+**A Platform To Connect Local PPE Manufacturing Efforts with Organizations In Need**
 
-## Quick Start<br>
+Project Overview(todo)
+
+## Getting Set up<br>
 This site is written in Flutter, a cross-platform UI toolkit from google that uses the Dart programming language.
 
 
@@ -39,22 +42,35 @@ You should see something similar to what's shown below:
 Once Flutter is successfully installed, you will need to install [Chrome](https://www.google.com/chrome/)(if it's not already installed) so that you can run your code in the browser during development
 
 Lastly, you will likely want to use Visual Studio Code as your code editor. Go to [Visual Studio Code](https://code.visualstudio.com/) to download the software. Then go to the "extensions" tab on the side and add the flutter extension and dart extension.
+
 [picture below]
 
 
-
-## Testing Flutter Install <br/>
+**Testing Flutter Install** <br/>
 Before you try running this project, make sure flutter is working properly by creating a new project.
 /*
 Todo
 */
 
+## Setting Project Up Locally <br/>
+
+ - 
+
+
+
+
+
+## Project Overview <br/>
+
 **Project File Structure**<br>
 - state/: Directory containing the majority of the logic of the site
         - AppState- the AppState class contains much of the core logic including initiating the database, handling forms, and dealing with user login
-- migrations/: Directory for scriptable deployment files
-- test/: Directory for test files for testing your application and contracts
-- truffle-config.js: Truffle configuration file
+        - service_locator - I use a package called get_it that enables me to get a specific instance of a class from anywhere in the app. The service locator is where I initiate the classes that I want to be able to access. 
+- pages/: All of the website pages are stored in their respective folder. The ___page.dart folder contains the main page component then any page specific components will be in the components folder
+- counters/: Directory models that store count information on the dirrent items(designs, requests etc)
+- main.dart - the app is created in the main.dart file, it is the root of the entire project
+- root_widget.dart - This widget is a wrapper around the current page widget. It includes the appbar and is where overlays are added to the screen.
+- theme.dart - In order to be able to change certian aspects of the design more easily, I've put most of the color and font size info into this file.
 ```
 lib
 ├── main.dart
