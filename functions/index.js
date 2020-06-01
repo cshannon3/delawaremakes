@@ -13,8 +13,6 @@ const nodemailer = require('nodemailer');
 admin.initializeApp();
 const db = admin.firestore();
 
-var source = fs.readFileSync(path.join(__dirname, 'templates/request.hbs'), 'utf8');
-var template = handlebars.compile(source);
 
 exports.sendMailFB = functions.https.onRequest(async (req, res) => {
      //cors(req, res, () => {
