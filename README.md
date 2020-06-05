@@ -1,4 +1,5 @@
-# Delaware Makes <br>
+# Delaware Makes
+
 **A Platform To Connect Local PPE Manufacturing Efforts with Organizations In Need**
 
 Project Overview(todo)
