@@ -43,8 +43,7 @@ dependencies:
   uuid:
   google_fonts:
   carousel_slider:
-  domore:
-    path: '../domore'
+ 
     
 dev_dependencies:
   flutter_test:

@@ -1,12 +1,11 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:delaware_makes/database/database.dart';
 import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/state/app_state.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/utility.dart';
-import 'package:domore/database/custom_model.dart';
-import 'package:domore/domore.dart';
 import 'package:flutter/material.dart';
 //, this.profileId
 class ProfilePage extends StatelessWidget {

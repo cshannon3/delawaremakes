@@ -1,13 +1,16 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delaware_makes/counters/counters.dart';
+import 'package:delaware_makes/database/database.dart';
+import 'package:delaware_makes/forms/form.dart';
 import 'package:delaware_makes/integrations/slack/slack_src.dart';
+import 'package:delaware_makes/login/login.dart';
 import 'package:delaware_makes/state/db_interface.dart';
 import 'package:delaware_makes/state/form_tabs.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/constant.dart';
 import 'package:delaware_makes/utils/secrets.dart';
-import 'package:domore/domore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:delaware_makes/utils/utils.dart';
@@ -68,16 +71,40 @@ class AppState extends ChangeNotifier {
 
  initLogin(){isLoginActive=true; notifyListeners();}
 
-  onSignIn(FirebaseUser firebaseUser, bool isSignUp){
+  onSignIn(FirebaseUser firebaseUser, bool isSignUp)async {
       if(isSignUp){}
       else currentUser = dataRepo.getItemByID("users", firebaseUser.uid);
 
     isLoginActive=false;
     userProfileData = currentUser;
     if(currentUser!=null)loggedIn=true;
-  
-    notifyListeners();
+    //, collectionName: null, saveToFirebase: null)
+
+  //  print("CREATE MODEL");
+  //   //print(data); print(collectionName);
+  //     try{
+  //     await Firestore.instance
+  //         .collection("mail")
+  //         .document("1")
+  //         .setData({
+  //           "to":"conshan@udel.edu",
+  //           "message":{
+  //             "subject":"test",
+  //             "text":"Hi there"
+  //           }
+  //         })
+  //         .catchError((onError) {
+  //       print(onError);
+  //     });
+  //     print("DONE");
+  //      notifyListeners();
+  //     return true ;
+  //   }catch(e){
+  //      notifyListeners();
+  //     return false;}
+   
   }
+
 
    onFormClose(){
       isLoginActive=false;

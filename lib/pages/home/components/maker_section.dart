@@ -1,9 +1,8 @@
 
 import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
-import 'package:delaware_makes/state/state.dart';
+import 'package:delaware_makes/shared_widgets/stylized_image_box.dart';
 import 'package:delaware_makes/theme.dart';
-import 'package:domore/domore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

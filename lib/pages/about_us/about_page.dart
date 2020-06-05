@@ -1,9 +1,9 @@
 
+import 'package:delaware_makes/shared_widgets/rounded_image_widget.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/utils/copy_to_clipboard.dart';
 import 'package:delaware_makes/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:domore/domore.dart';
 
 import 'dart:math' as math;
 class TextModel {}

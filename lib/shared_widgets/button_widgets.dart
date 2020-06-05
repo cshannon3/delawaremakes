@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:domore/domore.dart';
-
+import '../extensions/hover_extension.dart';
  Widget mainMyTabs({String selected, double width, Map<String, Function()> items}){
       List<Widget> tabWidgets = [];
       items.forEach((key, value) {
@@ -105,3 +104,81 @@ class CallToActionButton extends StatelessWidget {
     ).showCursorOnHover.moveUpOnHover;
   }
 }
+class MenuButton extends StatelessWidget {
+    final String name;
+  final Function() onPressed;
+
+  const MenuButton({Key key,@required this.name,@required this.onPressed}) : super(key: key);
+  @override
+    Widget build(BuildContext context) {
+    return Container(
+      height:40,
+      child: FlatButton(
+                      onPressed: onPressed,
+                      textColor: Colors.white,
+                      child: Text(name,style:  TextStyle(color: Colors.white, fontSize: 16.0)),
+      ).showCursorOnHover.moveUpOnHover,
+    );
+  }
+}
+
+
+class MainUIButton extends StatelessWidget {
+  final Function() onPressed;
+  final String text;
+
+  const MainUIButton({Key key, @required this.onPressed, @required this.text}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return   MaterialButton(
+            hoverColor: Colors.white,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            color: Colors.grey[200],
+            onPressed: onPressed,
+            child: Text(text)).showCursorOnHover.moveUpOnHover;
+  }
+}
+
+enum CommonIcons{
+  CLOSE,
+  INFO,
+  LINK,
+  VERIFY,
+  GOTO
+}
+
+
+Widget iconButton({
+  @required CommonIcons icon,  
+  String toolTip,
+  Color color,
+  @required Function() onPressed
+  }) {
+  IconData iconData=Icons.question_answer;
+  switch (icon) {
+    case CommonIcons.CLOSE:
+        iconData= Icons.clear;
+      break;
+    case CommonIcons.INFO:
+        iconData= Icons.info_outline;
+      break;
+     case CommonIcons.LINK:
+          iconData= Icons.link;
+      break;
+    case CommonIcons.GOTO:
+          iconData= Icons.input;
+      break;
+    case CommonIcons.VERIFY:
+          iconData= Icons.verified_user;
+      break;
+    default:
+     break;
+  }
+  return (toolTip!=null)?Tooltip(message: toolTip, child:IconButton(icon: Icon(iconData), color: color, onPressed: onPressed).showCursorOnHover.moveUpOnHover)
+  :IconButton(icon: Icon(iconData), color: color, onPressed: onPressed).showCursorOnHover.moveUpOnHover;
+  
+}
+
+
+

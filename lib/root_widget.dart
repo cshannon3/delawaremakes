@@ -1,9 +1,12 @@
 import 'package:delaware_makes/routes.dart'; //import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 
 import 'package:delaware_makes/state/state.dart';
-import 'package:domore/domore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'forms/form.dart';
+import 'login/login.dart';
+import 'shared_widgets/shared_widgets.dart';
 
 class RootPage extends StatefulWidget {
   final Widget screen;

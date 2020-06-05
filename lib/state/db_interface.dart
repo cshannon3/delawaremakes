@@ -1,10 +1,7 @@
-/*
-This is an additional class to help handle and keep track of data associations
-*/
 
 
 import 'package:delaware_makes/counters/counters.dart';
-import 'package:domore/domore.dart';
+import 'package:delaware_makes/database/database.dart';
 
 class DBInterface{
   final DataRepo dataRepo;

@@ -107,3 +107,43 @@ String getUserName({String name, String id}) {
   return userName;
 }
 
+
+
+
+bool validateEmail(String email) {
+  String p =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regExp = new RegExp(p);
+  var status = regExp.hasMatch(email);
+  return status;
+}
+
+
+List<Widget> tryAdd(List<Widget> items, var wid){
+  if (wid is List<Widget>) items.addAll(wid);
+  else if  (wid is Widget) items.add(wid);
+  return items;
+
+}
+dynamic ifIsOne(var tokens, var names) {
+  if (tokens==null || names==null || !(names is List))return null;
+  var out;
+  int index = 0;
+  while (out==null && index<names.length){out=ifIs(tokens, names[index]);index+=1;}
+   return out;
+
+}
+
+String capWord(String word) {
+  if (!word.contains("_")) return word[0].toUpperCase() + word.substring(1);
+  String out = "";
+  word.split("_").forEach((w) => out += capWord(w));
+  return out;
+}
+
+bool hasChildren(String key){
+   var widgetInfo = key.contains("_") ? key.split("_") : [key];
+   return (["stack", "column", "row", "listview"].contains(widgetInfo[0]));
+ }
+
+dynamic safeGetPath(var map, List path)=>checkPath(map, path)[1];

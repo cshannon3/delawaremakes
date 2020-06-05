@@ -1,8 +1,8 @@
 
+import 'package:delaware_makes/database/database.dart';
+import 'package:delaware_makes/shared_widgets/stylized_image_box.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/utils.dart';
-import 'package:domore/database/custom_model.dart';
-import 'package:domore/domore.dart';
 import 'package:flutter/material.dart';
 
 

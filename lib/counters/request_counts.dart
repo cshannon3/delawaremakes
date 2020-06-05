@@ -1,7 +1,4 @@
 
-import 'package:delaware_makes/state/service_locator.dart';
-import 'package:delaware_makes/state/state.dart';
-import 'package:domore/domore.dart';
 import 'package:flutter/material.dart';
 
 Map icons={
