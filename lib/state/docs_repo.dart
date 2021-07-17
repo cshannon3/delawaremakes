@@ -25,10 +25,10 @@ class DocsRepo{
   }
 
 loadDoc() async {
-    Firestore.instance.collection("texts").snapshots().listen((onData) {
-      onData.documents.forEach((dataItem) {
+    FirebaseFirestore.instance.collection("texts").snapshots().listen((onData) {
+      onData.docs.forEach((dataItem) {
         if (dataItem.data != null) {
-          Map<String, dynamic> map = dataItem.data;
+          Map<String, dynamic> map = dataItem.data();
           doc.sections[map["id"]]= map["text"];
         }
       });

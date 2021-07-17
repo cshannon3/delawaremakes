@@ -3,7 +3,8 @@ import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/theme.dart';
 import 'package:domore/database/new_data_repo.dart';
-import 'package:fluro/fluro.dart';
+import 'package:fluro/fluro.dart' as fluro;
+
 import 'package:flutter/material.dart';
 void main() async {
   setupLocator();
@@ -25,7 +26,7 @@ class AppComponent extends StatefulWidget {
 
 class AppComponentState extends State<AppComponent> {
   AppComponentState() {
-    final router = Router();
+    final router = fluro.Router();
     Routes.configureRoutes(router);
     Application.router = router;
   }

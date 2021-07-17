@@ -1,6 +1,7 @@
 
 import 'package:delaware_makes/routes.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
+import 'package:delaware_makes/shared_widgets/stylized_image_box.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/theme.dart';
 import 'package:domore/domore.dart';
@@ -66,8 +67,8 @@ class MakerSection extends StatelessWidget {
                   child:Stack(children: [
      Container(
        height: double.infinity,width:double.infinity,
-       child: Image.network(
-         "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.15752-9/s2048x2048/97004143_237907727468307_3348191839210438656_n.jpg?_nc_cat=100&_nc_sid=b96e70&_nc_ohc=f5XU8kL6bVIAX9WZaBz&_nc_ht=scontent.fphl2-1.fna&_nc_tp=7&oh=d91b91d0aa5c5392ce61cd4ab6ee8bd1&oe=5EE9CFBA",
+       child: Image.asset(
+         "groups_inv.jpg",
          fit: BoxFit.cover,
          )),
                 Container(height: double.infinity,width:double.infinity, color:Colors.black.withOpacity(0.6),
@@ -114,9 +115,9 @@ class MakerSection extends StatelessWidget {
                   child:Stack(children: [
      Container(
        height: double.infinity,width:double.infinity,
-       child: Image.network(
-         "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.15752-9/s2048x2048/97004143_237907727468307_3348191839210438656_n.jpg?_nc_cat=100&_nc_sid=b96e70&_nc_ohc=f5XU8kL6bVIAX9WZaBz&_nc_ht=scontent.fphl2-1.fna&_nc_tp=7&oh=d91b91d0aa5c5392ce61cd4ab6ee8bd1&oe=5EE9CFBA",
-         fit: BoxFit.cover,
+       child: Image.asset(
+         "groups_inv.jpg",
+          fit: BoxFit.cover,
          )),
                 Container(height: double.infinity,width:double.infinity, 
                 color:Colors.black.withOpacity(0.7),
@@ -186,24 +187,24 @@ class MakerSection extends StatelessWidget {
   Widget designs(BuildContext context,bool mobile) => Container(
       width: mobile ?tileW:tileWdesk,
       height: mobile ?tileH:tileHdesk,
-      child: StylizedImageBox(
+      child: StylizedImageBoxAsset(
           onPressed: () {
             tappedMenuButton(context, "/resources");
           },
           bottomText: "Help 3D Print PPE",
-          url:"https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/92470100_10222513279318993_2011992938938105856_o.jpg?_nc_cat=103&_nc_sid=825194&_nc_ohc=ZSuZYyg4pvoAX8gClpc&_nc_ht=scontent.fphl2-1.fna&oh=704f95c416f69fbce85cb118565722ca&oe=5EE55C61"));
+          url:"pins.jpg"));
 
 
 Widget locations(BuildContext context, bool mobile) => Container(
       width: mobile ?tileW:tileWdesk,
       height: mobile ?tileH:tileHdesk,
-      child: StylizedImageBox(
+      child: StylizedImageBoxAsset(
         //topRightWidget: iconButton(icon: CommonIcons.INFO, onPressed: null, ),
           onPressed: () {
              tappedMenuButton(context, "/designs");
             },
           bottomText: "Design Library",
-          url: "https://scontent.fphl2-3.fna.fbcdn.net/v/t1.0-9/98574660_3256293901057024_8901266270092001280_o.jpg?_nc_cat=104&_nc_sid=825194&_nc_ohc=JU1HBc98GGQAX-cbneO&_nc_ht=scontent.fphl2-3.fna&oh=b6ec3202f102164310aebdd1ec0481b4&oe=5EF4AA42"));
+          url: "earsavers.jpg"));
 }
 
 

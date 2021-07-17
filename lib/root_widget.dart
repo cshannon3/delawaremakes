@@ -55,7 +55,9 @@ class _RootPageState extends State<RootPage> {
                       formModel: appState.currentFormModel,
                       isFullView: appState.isFullViewForm(),
                       child: widget.screen,
-                      uploadImageFile: null,
+                      uploadImageFile: (file)=>{
+                        print(file)
+                      },
                       onSubmit:(isDone) async{
                         appState.submitForm(isDone);
                       },

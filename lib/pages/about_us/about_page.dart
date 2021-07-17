@@ -1,4 +1,5 @@
 
+import 'package:delaware_makes/shared_widgets/rounded_image_box.dart';
 import 'package:delaware_makes/shared_widgets/shared_widgets.dart';
 import 'package:delaware_makes/utils/copy_to_clipboard.dart';
 import 'package:delaware_makes/utils/utils.dart';
@@ -65,10 +66,10 @@ class AboutUsPage extends StatelessWidget {
                             child: headTitle("About Us", secondaryBackgroundColor, fsVLg),
                           ))),
                   
-                    about(w: w, top:50.0, left: -300.0 -exp, h:250.0,rotation: -math.pi/30, url: "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/100087198_10163684081755092_8366618098156961792_o.jpg?_nc_cat=100&_nc_sid=8bfeb9&_nc_ohc=rhHtvC0h8WYAX9x_U4Y&_nc_ht=scontent.fphl2-1.fna&oh=13a2917d06350edf9c1b7e9132c0e39d&oe=5EEE9569"),
-                    about(w: w, top:50.0, left: 110.0+exp, h:250.0,rotation: math.pi/30, url: "https://scontent.fphl2-4.fna.fbcdn.net/v/t1.0-9/95258229_10163550216665092_3526744581871763456_o.jpg?_nc_cat=106&_nc_sid=730e14&_nc_ohc=YGpT-BeCzPoAX_n3XB6&_nc_ht=scontent.fphl2-4.fna&oh=94d16b798228935ba454837473f1a167&oe=5EEF7783",),
-                    about(w: w, top:150.0, h:150.0, left:exp/5, wid:150.0, url: "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/92470100_10222513279318993_2011992938938105856_o.jpg?_nc_cat=103&_nc_sid=825194&_nc_ohc=vwwzrwkz6AwAX_lj92F&_nc_ht=scontent.fphl2-1.fna&oh=23bc077b056444bd72899b6307ae7fbe&oe=5EF139E1"),
-                    about(w: w, top:150.0, left: -150.0-exp/5, h:150.0, wid:150.0, url: "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/93378709_3139143336119330_2227783348703461376_o.jpg?_nc_cat=103&_nc_sid=825194&_nc_ohc=130g8HSRv9EAX_LUFPP&_nc_ht=scontent.fphl2-1.fna&oh=84ac83a8b613a0ef164bf9be6a2c3ffe&oe=5EEE8954"),
+                    about(w: w, top:50.0, left: -300.0 -exp, h:250.0,rotation: -math.pi/30, url:"shipley.jpg"),
+                    about(w: w, top:50.0, left: 110.0+exp, h:250.0,rotation: math.pi/30, url:"dropoff.jpg",),
+                    about(w: w, top:150.0, h:150.0, left:exp/5, wid:150.0, url: "dropoff.jpg"),
+                    about(w: w, top:150.0, left: -150.0-exp/5, h:150.0, wid:150.0, url: "shipley.jpg"),
                    
                   ])),
                   SizedBox(height: 50.0),
@@ -105,10 +106,10 @@ class AboutUsPage extends StatelessWidget {
                             child: headTitle("About Us", secondaryBackgroundColor, fsVLg),
                           ))),
                   
-                    about(w: w, top:50.0, left: -420.0, h:250.0,rotation: -math.pi/30, url: "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/100087198_10163684081755092_8366618098156961792_o.jpg?_nc_cat=100&_nc_sid=8bfeb9&_nc_ohc=rhHtvC0h8WYAX9x_U4Y&_nc_ht=scontent.fphl2-1.fna&oh=13a2917d06350edf9c1b7e9132c0e39d&oe=5EEE9569"),
-                     about(w: w, top:50.0, left: 210.0, h:250.0,rotation: math.pi/30, url: "https://scontent.fphl2-4.fna.fbcdn.net/v/t1.0-9/95258229_10163550216665092_3526744581871763456_o.jpg?_nc_cat=106&_nc_sid=730e14&_nc_ohc=YGpT-BeCzPoAX_n3XB6&_nc_ht=scontent.fphl2-4.fna&oh=94d16b798228935ba454837473f1a167&oe=5EEF7783",),
-                    about(w: w, top:150.0, h:200.0, wid:200.0, url: "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/92470100_10222513279318993_2011992938938105856_o.jpg?_nc_cat=103&_nc_sid=825194&_nc_ohc=vwwzrwkz6AwAX_lj92F&_nc_ht=scontent.fphl2-1.fna&oh=23bc077b056444bd72899b6307ae7fbe&oe=5EF139E1"),
-                    about(w: w, top:150.0, left: -220.0, h:200.0, wid:200.0, url: "https://scontent.fphl2-1.fna.fbcdn.net/v/t1.0-9/93378709_3139143336119330_2227783348703461376_o.jpg?_nc_cat=103&_nc_sid=825194&_nc_ohc=130g8HSRv9EAX_LUFPP&_nc_ht=scontent.fphl2-1.fna&oh=84ac83a8b613a0ef164bf9be6a2c3ffe&oe=5EEE8954"),
+                    about(w: w, top:50.0, left: -420.0, h:250.0,rotation: -math.pi/30, url: "shipley.jpg"),
+                     about(w: w, top:50.0, left: 210.0, h:250.0,rotation: math.pi/30, url: "dropoff.jpg",),
+                    about(w: w, top:150.0, h:200.0, wid:200.0, url: "dropoff.jpg"),
+                    about(w: w, top:150.0, left: -220.0, h:200.0, wid:200.0, url: "shipley.jpg"),
                    
                   ])),
               SizedBox(height: 50.0),
@@ -154,7 +155,7 @@ class AboutUsPage extends StatelessWidget {
                         child: Container(
                             height: h,
                             width: wid,
-                            child: RoundedImage(url: url)
+                            child: RoundedImageAsset(url: url)
                          ),
                       ),
                     );
@@ -209,7 +210,7 @@ class PersonTile extends StatelessWidget {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Transform.translate(
                 offset: Offset(0.0, 0.0),
-                child: Image.network(
+                child: Image.asset(
                   person.url,
                   fit: BoxFit.cover,
                 )),
@@ -230,7 +231,7 @@ class PersonTile extends StatelessWidget {
                 Container(
                     height: 300,
                     width: 220.0,
-                    child: RoundedImage(url: person.url)),
+                    child: RoundedImageAsset(url: person.url)),
                 SizedBox(
                   width: 20.0,
                 ),
@@ -256,6 +257,7 @@ class PersonTile extends StatelessWidget {
       );
 }
 
+
 String abt = '''
       We are a network of volunteers dedicated to supplying essential workplaces with personal protective equipment(PPE)-related items made from 3D printers. While most of our staff is composed of staff from learning centers across the state, many of our team members are also small businesses or simply individuals who are engineering enthusiasts. 
       
@@ -267,10 +269,10 @@ String abt = '''
 
 // Yianni
 String yianniUrl =
-    "https://scontent.fphl2-3.fna.fbcdn.net/v/t1.0-9/94612989_10163550215880092_3340293540381982720_o.jpg?_nc_cat=102&_nc_sid=730e14&_nc_ohc=Ab1ll0Njhm0AX8WA5Ad&_nc_ht=scontent.fphl2-3.fna&oh=287772403db28d915bea68d7c336c46b&oe=5EEDBAE1";
+    "yianni.jpg";
 
 String connorUrl =
-    "https://scontent.fphl2-3.fna.fbcdn.net/v/t1.0-9/98135797_3222151604485169_380042771051839488_o.jpg?_nc_cat=101&_nc_sid=b9115d&_nc_ohc=qla0R4W5EBEAX--AYa0&_nc_ht=scontent.fphl2-3.fna&oh=cf3d73bb4daf167b78b1d64ed083b6cb&oe=5EEEDBE5";
+    "connor.jpg";
 //
 String yianniStr = '''
      During these unprecedented times, we all must do what we can to protect those who are at the greatest risk of this terrible disease. 
@@ -301,6 +303,7 @@ Our actions are motivated by a few core values:
 3. Experimental Mindset - Solving the problems we are faces requires creativity and experimentation. 
 We encourage people to test out new ideas. 
 ''';
+
 /*
 Values - 
 Transparency

@@ -1,4 +1,5 @@
 
+import 'package:delaware_makes/shared_widgets/stylized_image_box.dart';
 import 'package:delaware_makes/state/state.dart';
 import 'package:delaware_makes/utils/utils.dart';
 import 'package:domore/database/custom_model.dart';
@@ -26,6 +27,7 @@ class DesignsPage extends StatelessWidget {
     List<CustomModel> designsOther = designVersions.where((element) => !element.getVal("isStarred", alt:false)).toList();
     designVersions = designsRec;
     designVersions.addAll(designsOther);
+    
     return Padding(
       padding: EdgeInsets.symmetric(horizontal:20.0, vertical: 20),
       child:Column(
@@ -48,8 +50,8 @@ class DesignsPage extends StatelessWidget {
          children: designVersions.map((designModel) => 
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: StylizedImageBox(
-              url: designModel.getVal("url"),
+            child: StylizedImageBoxAsset(
+              url: designModel.getVal("imagePath"),
                  topLeftWidget:  (designModel.getVal("sourceUrl")!=null)?
                     Tooltip(
                       message: "Source Url",

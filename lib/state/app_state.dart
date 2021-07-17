@@ -68,7 +68,7 @@ class AppState extends ChangeNotifier {
 
  initLogin(){isLoginActive=true; notifyListeners();}
 
-  onSignIn(FirebaseUser firebaseUser, bool isSignUp){
+  onSignIn(User firebaseUser, bool isSignUp){
       if(isSignUp){}
       else currentUser = dataRepo.getItemByID("users", firebaseUser.uid);
 
@@ -205,7 +205,7 @@ Request
 
   Future<bool> _submitRequestForm() async{
           print("SUBMIT Request");
-          Slack slack = new Slack(slackRequestWebhook);
+          Slack slack = new Slack("https://hooks.slack.com/services/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");
          
       final Map reqs =safeGet(key: "requests", map: currentFormModel.buffer, alt: {});
      String now = DateTime.now().toUtc().toString();
@@ -241,7 +241,7 @@ Request
       if(addr!=null){
         addr = addr.replaceAll(" ", "+").replaceAll("/", "").replaceAll("#", "");
         var placeUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=$addr&key=$googleAPIKey";
-        var placeResponse = await http.post(placeUrl, body: {});
+        var placeResponse = await http.post(Uri.parse(placeUrl), body: {});
         try{
           Map loc = json.decode(placeResponse.body);
           print(loc);

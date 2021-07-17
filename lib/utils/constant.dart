@@ -1,7 +1,7 @@
 
 final bool debug=false;
 
-String placeHolderUrl="https://www.ajactraining.org/wp-content/uploads/2019/09/image-placeholder.jpg";
+String placeHolderUrl="https://firebasestorage.googleapis.com/v0/b/million-more-makers.appspot.com/o/images%2Fimage-placeholder.jpg?alt=media&token=da459bd3-7f1d-4c57-b24e-9bfc4041d310";
 
 String dummyProfilePic = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6TaCLCqU4K0ieF27ayjl51NmitWaJAh_X0r1rLX4gMvOe0MDaYw&s';
 String appFont = 'HelveticaNeuea';

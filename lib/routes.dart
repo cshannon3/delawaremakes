@@ -3,18 +3,18 @@ import 'package:delaware_makes/pages/pages.dart';
 import 'package:delaware_makes/pages/resources/resources_page.dart';
 import 'package:delaware_makes/root_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:fluro/fluro.dart';
+import 'package:fluro/fluro.dart' as fluro;
 
 
   void tappedMenuButton(BuildContext context, String key) {
-    TransitionType transitionType = TransitionType.fadeIn;
+    fluro.TransitionType transitionType = fluro.TransitionType.fadeIn;
     Application.router
         .navigateTo(context, key, transition: transitionType)
         .then((result) {});
   }
 
 class Application {
-  static Router router;
+  static fluro.Router router;
 }
 class Routes {
   static String root = "/";
@@ -35,8 +35,8 @@ class Routes {
       };
   }
 
-  static void configureRoutes(Router router) {
-    router.notFoundHandler = Handler(
+  static void configureRoutes(fluro.Router router) {
+    router.notFoundHandler = fluro.Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
       print("ROUTE WAS NOT FOUND !!!");
 
@@ -51,40 +51,40 @@ class Routes {
     router.define(kanban, handler: kanbanHandler);
   }
 }
-var locRouterHandler = Handler(
+var locRouterHandler = fluro.Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:MapsPage2(),currentRoute:"/map");
 });
 
-var rootHandler = Handler(
+var rootHandler = fluro.Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:HomePageMain(),currentRoute:"/");
 });
 
-var profileHandler = Handler(
+var profileHandler = fluro.Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:ProfilePage(),currentRoute:"/profile");
 });
-var designsHandler = Handler(
+var designsHandler = fluro.Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:DesignsPage(),currentRoute:"/designs");
 });
-var resourcesHandler = Handler(
+var resourcesHandler = fluro.Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:ResourcesPage(),currentRoute:"/resources");
 });
-var aboutUsHandler = Handler(
+var aboutUsHandler = fluro.Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:AboutUsPage(),currentRoute:"/aboutus");
 });
 
-var kanbanHandler = Handler(
+var kanbanHandler = fluro.Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return RootPage(screen:KanBan(),currentRoute:"/kanban");
 });
 
 
-var usersHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+var usersHandler = fluro.Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
   return RootPage(screen:ProfilePage(),currentRoute:"/profile");
 });
 
