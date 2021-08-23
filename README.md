@@ -1,8 +1,23 @@
 # Delaware Makes
 
-**A Platform To Connect Local PPE Manufacturing Efforts with Organizations In Need**
+**A Platform To Connect Local PPE Manufacturing Efforts with Organizations In Need During the Pandemic**
 
-Project Overview(todo)
+
+## Highlighted Features
+
+### Request PPE through the site
+
+![home](assets/home.png)
+
+
+
+### See All Facilities In Need and Claim Builds
+
+![map](assets/mapscreen.png)
+
+
+
+
 **Relavent Resources**
 - [Lucid Chart](https://app.lucidchart.com/invitations/accept/c0e0ac52-e95d-467d-83f0-0afded2a9faa)
 - [Delaware Makes Slack](https://join.slack.com/t/delawaremakes/shared_invite/zt-ee1k7e45-lseLrkf_Jt_heZG34eBMtA)
